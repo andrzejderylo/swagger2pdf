@@ -1,0 +1,1185 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "Swashbuckle Dummy API V1"
+  },
+  "host": "localhost:60179",
+  "schemes": [ "http" ],
+  "paths": {
+    "/api/v1/ISRCTNForm": {
+      "get": {
+        "tags": [ "IsrctnForm" ],
+        "operationId": "IsrctnForm_Get",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "type": "object" }
+          }
+        }
+      }
+    },
+    "/api/v1/ISRCTNForm/Upload": {
+      "post": {
+        "tags": [ "IsrctnForm" ],
+        "operationId": "IsrctnForm_UploadExceltoFtp",
+        "consumes": [ "application/json", "text/json", "application/x-www-form-urlencoded" ],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "isrctnRegnFormDetailList",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.ISRCTN.Controllers.ISRCTNRegnFormModel" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "type": "object" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/SummaryList": {
+      "get": {
+        "tags": [ "Study" ],
+        "operationId": "Study_Get",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySummaryResponse" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/DetailList": {
+      "get": {
+        "tags": [ "Study" ],
+        "operationId": "Study_StudyDetail",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailResponse[NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailModel]" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/SetSiteCapacityAndCapability": {
+      "post": {
+        "tags": [ "Study" ],
+        "operationId": "Study_SetSiteCapacityAndCapability",
+        "consumes": [ "application/json", "text/json", "application/xml", "text/xml", "application/x-www-form-urlencoded" ],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "studySiteCapacityandCapabilityList",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapability" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapabilityResponse" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/GetResearchActivityConfirmation": {
+      "get": {
+        "tags": [ "Study" ],
+        "operationId": "Study_GetResearchActivity",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.GetStudyRaDataAPIResult" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/GetManualResearchActivityData": {
+      "get": {
+        "tags": [ "Study" ],
+        "operationId": "Study_GetManualResearchActivityData",
+        "consumes": [],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "uploadedFrom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "uploadedTo",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "studyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.GetManualRADataApiResult" }
+          }
+        }
+      }
+    },
+    "/api/v1/Study/SetResearchActivityUploadSource": {
+      "post": {
+        "tags": [ "Study" ],
+        "operationId": "Study_SetResearchActivityUploadSource",
+        "consumes": [ "application/json", "text/json", "application/xml", "text/xml", "application/x-www-form-urlencoded" ],
+        "produces": [ "application/json", "text/json" ],
+        "parameters": [
+          {
+            "name": "researchActivities",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadSourceDo" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadSourceResponse" }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "NIHR.CRN.CPMS.API.Areas.ISRCTN.Controllers.ISRCTNRegnFormModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "ShortName": { "type": "string" },
+        "IrasId": { "type": "string" },
+        "EudraCTNumber": { "type": "string" },
+        "ProtocolReferenceNumber": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "StudyResearchSummary": { "type": "string" },
+        "EthicsReview": { "type": "string" },
+        "StudyDesignInterventionDetails": { "type": "string" },
+        "Class1Type": { "type": "string" },
+        "TrialSetting": { "type": "string" },
+        "DiseaseCondition": { "type": "string" },
+        "StudyPhase": { "type": "string" },
+        "Intervention": { "type": "string" },
+        "PrimaryOutcomeMeasures": { "type": "string" },
+        "SecondaryOutcomeMeasures": { "type": "string" },
+        "TrialWebsite": { "type": "string" },
+        "ParticipantTargetGender": { "type": "string" },
+        "ParticipantInclusionCriteria": { "type": "string" },
+        "ParticipantExclusionCriteria": { "type": "string" },
+        "ParticipantTarget": { "type": "string" },
+        "CountriesOfRecuitment": { "type": "string" },
+        "ContactTitle": { "type": "string" },
+        "ContactForename": { "type": "string" },
+        "ContactSurename": { "type": "string" },
+        "ContactAddress": { "type": "string" },
+        "ContactCity": { "type": "string" },
+        "ContactCountry": { "type": "string" },
+        "ContactPostcode": { "type": "string" },
+        "ContactTelephone": { "type": "string" },
+        "ContactEmail": { "type": "string" },
+        "ContactPrivacy": { "type": "string" },
+        "FunderName": { "type": "string" },
+        "SponsorOrganisationName": { "type": "string" },
+        "SponsorOrganisationAddress": { "type": "string" },
+        "SponsorOrganisationCity": { "type": "string" },
+        "SponsorOrganisationCountry": { "type": "string" },
+        "SponsorOrganisationPostcode": { "type": "string" },
+        "SponsorOrganisationTelephone": { "type": "string" },
+        "SponsorOrganisationEmail": { "type": "string" },
+        "FreeRegistration": { "type": "boolean" },
+        "DateISRCTNFormSubmitted": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "DateISRCTNFormSentByCPMS": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "DateISRCTNNumberReceived": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "Title": { "type": "string" },
+        "RecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "RecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ISRCTNNumber": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySummaryResponse": {
+      "type": "object",
+      "properties": {
+        "Studies": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySummaryModel" }
+        },
+        "TotalRecords": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PageSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "CurrentPageNumber": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySummaryModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "ShortName": { "type": "string" },
+        "Title": { "type": "string" },
+        "IrasId": { "type": "string" },
+        "RecReference": { "type": "string" },
+        "ClinicalTrialGovReference": { "type": "string" },
+        "IsrctnNumber": { "type": "string" },
+        "EudraCtNumber": { "type": "string" },
+        "ResearchSummary": { "type": "string" },
+        "UkRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "NetworkRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "GlobalRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PlannedRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "PlannedRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "InclusionCriteria": { "type": "string" },
+        "ExclusionCriteria": { "type": "string" },
+        "UpperAgeLimit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "UpperAgeLimitMetric": { "type": "string" },
+        "LowerAgeLimit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "LowerAgeLimitMetric": { "type": "string" },
+        "StudyWebsite": { "type": "string" },
+        "Email": { "type": "string" },
+        "ModifiedDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "TargetGender": { "type": "string" },
+        "StudyDesignType": { "type": "string" },
+        "StudyInterventionDescription": { "type": "string" },
+        "Status": { "type": "string" },
+        "ActualRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "QualificationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "StudyDiseases": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDisease" }
+        },
+        "StudyOrganisations": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOrganisation" }
+        },
+        "StudySpecialties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialty" }
+        },
+        "StudyDesignMapping": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDesignMapping" }
+        },
+        "StudyPhases": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPhase" }
+        },
+        "StudyInterventions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyIntervention" }
+        },
+        "StudyOutcomes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOutcome" }
+        },
+        "StudyPerson": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPerson" }
+        },
+        "StudySiteCountries": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySitesCountry" }
+        },
+        "StudyPublications": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPublication" }
+        },
+        "StudyParticipantTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyParticipantType" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Interfaces.System.IResult": {
+      "type": "object",
+      "properties": {
+        "Result": {
+          "format": "int32",
+          "enum": [ 0, 1 ],
+          "type": "integer",
+          "readOnly": true
+        },
+        "IsSuccess": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "IsFailed": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "Errors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "isStale": { "type": "boolean" },
+        "DetailedErrors": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.ErrorDescription" }
+        },
+        "Entity": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.Data.IData" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDisease": {
+      "type": "object",
+      "properties": {
+        "Disease": { "type": "string" },
+        "Category": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOrganisation": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "OrgRole": { "type": "string" },
+        "OrgRoleIdentifier": { "type": "string" },
+        "StudySites": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySite" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialty": {
+      "type": "object",
+      "properties": {
+        "IsManagingSpecialty": { "type": "boolean" },
+        "Specialty": { "type": "string" },
+        "StudySpecialtySubspecialties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtySubspecialty" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDesignMapping": {
+      "type": "object",
+      "properties": {
+        "InterventionDetail": { "type": "boolean" },
+        "Name": { "type": "string" },
+        "StudyDesignType": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPhase": {
+      "type": "object",
+      "properties": { "Name": { "type": "string" } }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyIntervention": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "Summary": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOutcome": {
+      "type": "object",
+      "properties": {
+        "Outcome": { "type": "string" },
+        "OutcomeTimepoint": { "type": "string" },
+        "IsPrimary": { "type": "boolean" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPerson": {
+      "type": "object",
+      "properties": {
+        "Role": { "type": "string" },
+        "Title": { "type": "string" },
+        "Firstname": { "type": "string" },
+        "Lastname": { "type": "string" },
+        "Email": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySitesCountry": {
+      "type": "object",
+      "properties": { "Name": { "type": "string" } }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPublication": {
+      "type": "object",
+      "properties": {
+        "CitationText": { "type": "string" },
+        "PubMedCentralIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyParticipantType": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.Interfaces.ErrorDescription": {
+      "type": "object",
+      "properties": {
+        "FieldId": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "FieldText": { "type": "string" },
+        "ErrorMessage": { "type": "string" },
+        "ErrorType": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.Interfaces.Data.IData": {
+      "type": "object",
+      "properties": {}
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySite": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "NetworkRecruitmentTarget": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PlannedRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "PlannedRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtySubspecialty": {
+      "type": "object",
+      "properties": {
+        "IsPrimary": { "type": "boolean" },
+        "SubSpecialty": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailResponse[NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailModel]": {
+      "type": "object",
+      "properties": {
+        "Studies": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailModel" }
+        },
+        "TotalRecords": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PageSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "CurrentPageNumber": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDetailModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "ShortName": { "type": "string" },
+        "Title": { "type": "string" },
+        "IrasId": { "type": "string" },
+        "RecReference": { "type": "string" },
+        "ClinicalTrialGovReference": { "type": "string" },
+        "IsrctnNumber": { "type": "string" },
+        "EudraCtNumber": { "type": "string" },
+        "ResearchSummary": { "type": "string" },
+        "UkRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "NetworkRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "GlobalRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PlannedRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "PlannedRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "InclusionCriteria": { "type": "string" },
+        "ExclusionCriteria": { "type": "string" },
+        "UpperAgeLimit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "UpperAgeLimitMetric": { "type": "string" },
+        "LowerAgeLimit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "LowerAgeLimitMetric": { "type": "string" },
+        "StudyWebsite": { "type": "string" },
+        "Email": { "type": "string" },
+        "ModifiedDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "TargetGender": { "type": "string" },
+        "StudyDesign": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDesign" },
+        "Status": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "StudyDiseases": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDiseaseDetail" }
+        },
+        "StudyOrganisations": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOrganisationLpms" }
+        },
+        "StudySpecialties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtyDetail" }
+        },
+        "StudyPhases": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPhaseDetail" }
+        },
+        "StudyInterventions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyIntervention" }
+        },
+        "StudyOutcomes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOutcome" }
+        },
+        "StudyPerson": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPerson" }
+        },
+        "StudySiteCountries": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySitesCountryDetail" }
+        },
+        "StudyPublications": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPublication" }
+        },
+        "StudyRouteId": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "QualificationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "IsOpenToNewSites": { "type": "boolean" },
+        "IsNonCrnnihrInfrastructureSupport": { "type": "boolean" },
+        "IsStudyRecruitmentUploadRequired": { "type": "boolean" },
+        "WalesRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "EnglandRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ScotlandRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "NiRecruitmentSampleSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ActualOpeningDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualClosureDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "StudySettings": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySetting" }
+        },
+        "EligibilityStatusId": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "LeadAdministrationId": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "ParticipantsRecruitedToDate": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "StudyConsumerParticipationDegree": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyConsumerParticipationDegree" }
+        },
+        "ConsumerParticipationDetail": { "type": "string" },
+        "StudyConsumerParticipationDetail": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyConsumerParticipationDetail" }
+        },
+        "GeographicalScopeId": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "LeadRnDCountryId": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "CommercialParticipationDegree": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDesign": {
+      "type": "object",
+      "properties": {
+        "StudyDesignType": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "InterventionDescription": { "type": "string" },
+        "ObervationalDetail": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "Interventional": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" }
+        },
+        "InterventionalDetail": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyDiseaseDetail": {
+      "type": "object",
+      "properties": {
+        "Disease": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "Category": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyOrganisationLpms": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" },
+        "OrgRoleName": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ReferenceData" },
+        "StudyFundings": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudyFundingLpms" }
+        },
+        "StudySites": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteLpms" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtyDetail": {
+      "type": "object",
+      "properties": {
+        "IsManagingSpecialty": { "type": "boolean" },
+        "Specialty": { "type": "string" },
+        "RtsIdentifier": { "type": "string" },
+        "StudySpecialtySubspecialties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtySubspecialtyDetail" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyPhaseDetail": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySitesCountryDetail": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySetting": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyConsumerParticipationDegree": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyConsumerParticipationDetail": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudyFundingLpms": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "GrantCode": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteLpms": {
+      "type": "object",
+      "properties": {
+        "RtsIdentifier": { "type": "string" },
+        "Name": { "type": "string" },
+        "NetworkRecruitmentTarget": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PlannedRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "PlannedRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualRecruitmentStartDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "ActualRecruitmentEndDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySpecialtySubspecialtyDetail": {
+      "type": "object",
+      "properties": {
+        "IsPrimary": { "type": "boolean" },
+        "SubSpecialty": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapability": {
+      "type": "object",
+      "properties": {
+        "Outcome": { "type": "string" },
+        "SiteId": { "type": "string" },
+        "DateSiteSelected": { "type": "string" },
+        "DateSiteReadyToStart": { "type": "string" },
+        "DateSiteConfirmed": { "type": "string" },
+        "StudyId": { "type": "string" },
+        "DateSiteInvited": { "type": "string" },
+        "DatesNotRequired": { "type": "string" },
+        "FirstPatientFirstVisitDate": { "type": "string" },
+        "Status": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteArrangementStatus" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteArrangementStatus": {
+      "type": "object",
+      "properties": {
+        "IsCopied": { "type": "boolean" },
+        "ErrorCode": { "type": "string" },
+        "ErrorMessage": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapabilityResponse": {
+      "type": "object",
+      "properties": {
+        "StudySiteCapacityandCapabilities": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapabilities" },
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapabilities": {
+      "type": "object",
+      "properties": {
+        "StudySiteCapacityandCapabilityList": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteCapacityandCapability" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.GetStudyRaDataAPIResult": {
+      "type": "object",
+      "properties": {
+        "ResearchActivities": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.GetStudyRaDataAPIDO" }
+        },
+        "CurrentPageNumber": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "TotalRecords": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PageSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.GetStudyRaDataAPIDO": {
+      "type": "object",
+      "properties": {
+        "StudyId": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "SiteIdentifier": { "type": "string" },
+        "ActivityPeriodMonth": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ActivityPeriodYear": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ParticipantStatus": { "type": "string" },
+        "ParticipantType": { "type": "string" },
+        "ParticipantCount": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "RaReceivedDate": { "type": "string" },
+        "RaConfirmationStatus": { "type": "string" },
+        "RaConfirmedNotAccurateReason": { "type": "string" },
+        "RaConfirmedNotAccurateExpectedCount": { "type": "string" },
+        "ConfirmationChangeDate": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.GetManualRADataApiResult": {
+      "type": "object",
+      "properties": {
+        "SiteLevelResearchActivity": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.SiteLevelResearchActivitiesApiDO" },
+        "ParticipantLevelResearchActivity": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ParticipantLevelResearchActivitiesApiDO" },
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.SiteLevelResearchActivitiesApiDO": {
+      "type": "object",
+      "properties": {
+        "CurrentPageNumber": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "TotalRecords": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PageSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "SiteResearchActivities": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.SiteLevelResearchActivityApiDO" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.ParticipantLevelResearchActivitiesApiDO": {
+      "type": "object",
+      "properties": {
+        "CurrentPageNumber": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "TotalRecords": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "PageSize": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ParticipantResearchActivities": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ParticipantLevelResearchActivityApiDO" }
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.SiteLevelResearchActivityApiDO": {
+      "type": "object",
+      "properties": {
+        "Activity": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.Activity" },
+        "Study": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.StudyData" },
+        "StudySite": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ReferenceData" },
+        "ParticipantType": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ReferenceData" },
+        "ActivityDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "UploadedDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.ParticipantLevelResearchActivityApiDO": {
+      "type": "object",
+      "properties": {
+        "ActivityType": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ReferenceData" },
+        "UniqueParticipant": { "type": "string" },
+        "Study": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.StudyData" },
+        "StudySite": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ReferenceData" },
+        "ParticipantType": { "$ref": "#/definitions/NIHR.CRN.CPMS.Entities.DO.ReferenceData" },
+        "ActivityDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "UploadedDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.Activity": {
+      "type": "object",
+      "properties": {
+        "FailedScreening": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "Recruited": {
+          "format": "int64",
+          "type": "integer"
+        }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.StudyData": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "ShortName": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.Entities.DO.ReferenceData": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "RtsIdentifier": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadSourceDo": {
+      "type": "object",
+      "properties": {
+        "SiteIdentifier": { "type": "string" },
+        "StudyId": { "type": "string" },
+        "CanProvideResearchActivityData": { "type": "string" },
+        "LpmsSiteTarget": { "type": "string" },
+        "ActualStartDate": { "type": "string" },
+        "ActualEndDate": { "type": "string" },
+        "Status": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadDoStatus" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadDoStatus": {
+      "type": "object",
+      "properties": {
+        "IsCopied": { "type": "boolean" },
+        "ErrorCode": { "type": "string" },
+        "ErrorMessage": { "type": "string" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadSourceResponse": {
+      "type": "object",
+      "properties": {
+        "Result": { "$ref": "#/definitions/NIHR.CRN.CPMS.Interfaces.System.IResult" },
+        "StudySiteLpmsResearchActivities": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteLpmsResearchActivities" }
+      }
+    },
+    "NIHR.CRN.CPMS.API.Areas.Study.Models.StudySiteLpmsResearchActivities": {
+      "type": "object",
+      "properties": {
+        "StudySiteLpmsResearchActivity": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/NIHR.CRN.CPMS.API.Areas.Study.Models.ResearchActivityUploadSourceDo" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swagger2Pdf", "Swagger2Pdf\Swagger2Pdf.csproj", "{775B20C0-A876-4BEA-8DBC-B7786A5977AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{775B20C0-A876-4BEA-8DBC-B7786A5977AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{775B20C0-A876-4BEA-8DBC-B7786A5977AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{775B20C0-A876-4BEA-8DBC-B7786A5977AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{775B20C0-A876-4BEA-8DBC-B7786A5977AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {791C9BDA-B409-4FB5-A068-63A3A5E944F4}
+	EndGlobalSection
+EndGlobal
