@@ -74,6 +74,20 @@
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\Response.cs" />
     <Compile Include="Model\SwaggerInfoDefinitions.cs" />
+    <Compile Include="PdfGenerator\Model\EndpointInfo.cs" />
+    <Compile Include="PdfGenerator\Model\SwaggerPdfDocumentModel.cs" />
+    <Compile Include="PdfGenerator\Model\Parameter.cs" />
+    <Compile Include="PdfGenerator\Model\Response.cs" />
+    <Compile Include="PdfGenerator\Schemas\ArraySchema.cs" />
+    <Compile Include="PdfGenerator\Schemas\ComplexTypeSchema.cs" />
+    <Compile Include="PdfGenerator\Schemas\Schama.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\ArraySchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\ComplexTypeSchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\SchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\SimpleTypeSchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\SimpleTypeSchema.cs" />
+    <Compile Include="PdfGenerator\SwaggerPdfDocumentBuilder.cs" />
+    <Compile Include="PdfGenerator\SwaggerPdfJsonConvert.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -84,5 +98,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

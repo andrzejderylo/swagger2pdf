@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Swagger2Pdf.PdfGenerator.Schemas;
 
 namespace Swagger2Pdf.Model
 {
-    public class ReferenceProperty : PropertyBase
+    public sealed class ReferenceProperty : PropertyBase
     {
         private string _ref;
         private Definition _definition;
@@ -23,16 +24,24 @@ namespace Swagger2Pdf.Model
         {
             get
             {
-                if(_definition == null)
+                if (_definition == null)
                 {
                     TryResolveReference();
                 }
                 return _definition;
             }
-            set
+            set => _definition = value;
+        }
+
+        public override Schema CreateSchema()
+        {
+            var complexTypeSchema = new ComplexTypeSchema();
+            foreach (var property in Definition.Properties)
             {
-                _definition = value;
+                complexTypeSchema.AddProperty(property.Key, property.Value.CreateSchema());
             }
+
+            return complexTypeSchema;
         }
     }
 }

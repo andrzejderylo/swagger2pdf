@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Swagger2Pdf.PdfGenerator.Schemas;
 
 namespace Swagger2Pdf.Model
 {
@@ -8,5 +9,10 @@ namespace Swagger2Pdf.Model
         public string Type { get; set; }
 
         public PropertyBase Items { get; set; }
+
+        public override Schema CreateSchema()
+        {
+            return new ArraySchema(Items.CreateSchema());
+        }
     }
 }
