@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Swagger2Pdf.Model
@@ -19,26 +20,5 @@ namespace Swagger2Pdf.Model
 
         [JsonProperty("paths")]
         public Dictionary<string, Dictionary<string, Path>> Paths { get; set; }
-
     }
-
-    public class SwaggerInfoDefinitions
-    {
-        private Dictionary<string, Definition> _definitions;
-
-        [JsonProperty("definitions")]
-        public Dictionary<string, Definition> Definitions
-        {
-            get => _definitions;
-            set
-            {
-                _definitions = value;
-                DefinitionsStatic = value;
-            }
-        }
-
-        public static Dictionary<string, Definition> DefinitionsStatic { get; set; }
-    }
-
-
 }

@@ -7,19 +7,22 @@ namespace Swagger2Pdf.Model
     {
         public object ResolveReference(object context, string reference)
         {
-            var key = reference.Split('/').Last();
-            var result = SwaggerInfoDefinitions.DefinitionsStatic[key];
-            return result;
+            return new ReferenceProperty
+            {
+                Ref = reference
+            };
         }
 
         public string GetReference(object context, object value)
         {
-            throw new System.NotImplementedException();
+            ReferenceProperty schema = value as ReferenceProperty;
+            return schema.Ref;
         }
 
         public bool IsReferenced(object context, object value)
         {
-            throw new System.NotImplementedException();
+            ReferenceProperty schema = value as ReferenceProperty;
+            return SwaggerInfoDefinitions.ResolveReference(schema.Ref) != null;
         }
 
         public void AddReference(object context, string reference, object value)

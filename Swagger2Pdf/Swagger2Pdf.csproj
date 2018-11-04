@@ -62,8 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\ArrayProperty.cs" />
+    <Compile Include="Model\Converters\PropertyBaseConverter.cs" />
     <Compile Include="Model\Definition.cs" />
-    <Compile Include="Model\Converters\DefinitionPropertyJsonConverter.cs" />
+    <Compile Include="Model\PropertyBase.cs" />
+    <Compile Include="Model\ReferenceProperty.cs" />
     <Compile Include="Model\ReferenceResolver.cs" />
     <Compile Include="Model\Info.cs" />
     <Compile Include="Model\SwaggerInfo.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Model\Path.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\Response.cs" />
+    <Compile Include="Model\SwaggerInfoDefinitions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

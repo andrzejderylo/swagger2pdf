@@ -2,12 +2,11 @@
 
 namespace Swagger2Pdf.Model
 {
-    public class ArrayProperty
+    public class ArrayProperty : PropertyBase
     {
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("items", NullValueHandling = NullValueHandling.Ignore)]
-        public object Items { get; set; }
+        public PropertyBase Items { get; set; }
     }
 }

@@ -16,20 +16,10 @@ namespace Swagger2Pdf.Model
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("format", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("format")]
         public string Format { get; set; }
 
         [JsonProperty("schema")]
-        public ComplexTypeSchema Schema { get; set; }
+        public PropertyBase Schema { get; set; }
     }
-
-    public class ComplexTypeSchema
-    {
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
-        [JsonProperty("items")]
-        public object Items { get; set; }
-    }
-
 }

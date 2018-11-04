@@ -8,6 +8,6 @@ namespace Swagger2Pdf.Model
         public string Description { get; set; }
 
         [JsonProperty("schema")]
-        public object Schema { get; set; }
+        public PropertyBase Schema { get; set; }
     }
 }

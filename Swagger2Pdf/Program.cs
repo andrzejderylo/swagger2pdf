@@ -19,7 +19,7 @@ namespace Swagger2Pdf
             {
                 var jsonString = File.ReadAllText(swaggerFile.FullName);
 
-                JsonConvert.DeserializeObject<SwaggerInfoDefinitions>(jsonString);
+                JsonConvert.DeserializeObject<SwaggerInfoDefinitions>(jsonString, new Model.Converters.PropertyBaseConverter());
 
                 JsonConvert.DefaultSettings = () =>
                 {
@@ -28,7 +28,7 @@ namespace Swagger2Pdf
                     return settings;
                 };
 
-                var obj = JsonConvert.DeserializeObject<SwaggerInfo>(jsonString);
+                var obj = JsonConvert.DeserializeObject<SwaggerInfo>(jsonString, new Model.Converters.PropertyBaseConverter());
                 PdfDocBuilder builder = new PdfDocBuilder();
 
                 SwaggerPdfDocumentModel docModel = new SwaggerPdfDocumentModel();
@@ -142,7 +142,7 @@ namespace Swagger2Pdf
                 foreach (var response in docEntry.Responses)
                 {
                     var row = table.AddRow();
-                    row[0].AddParagraph(JsonConvert.SerializeObject(response.Schema, SerializerSettingsFactory()));
+                    row[0].AddParagraph(SerializeObject(response.Schema));
                 }
             }
 
@@ -177,7 +177,7 @@ namespace Swagger2Pdf
                 foreach (var bodyParameter in docEntry.BodyParameters)
                 {
                     var row = table.AddRow();
-                    row[0].AddParagraph(JsonConvert.SerializeObject(bodyParameter.Schema, SerializerSettingsFactory()));
+                    var paragraph = row[0].AddParagraph(SerializeObject(bodyParameter.Schema));
                 }
             }
         }
@@ -219,10 +219,27 @@ namespace Swagger2Pdf
         {
             return new JsonSerializerSettings
             {
-                ReferenceResolverProvider = () => new ReferenceResolver(),
-                Formatting = Formatting.Indented
+                //ReferenceResolverProvider = () => new ReferenceResolver(),
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore
             };
         };
+
+        private string SerializeObject(object obj)
+        {
+            using (TextWriter sw = new StringWriter())
+            {
+                using (JsonTextWriter jw = new JsonTextWriter(sw))
+                {
+                    jw.Indentation = 1;
+                    jw.IndentChar = '\t';                    
+                    jw.Formatting = Formatting.Indented;
+                    JsonSerializer serializer = JsonSerializer.Create(SerializerSettingsFactory());
+                    serializer.Serialize(jw, obj);
+                    return sw.ToString();
+                }
+            }
+        }
 
     }
 }
