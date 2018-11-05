@@ -22,6 +22,8 @@ namespace Swagger2Pdf.PdfGenerator
             settings.Converters.Add(new ArraySchemaJsonConverter());
             settings.Converters.Add(new SimpleTypeSchemaJsonConverter());
             settings.Converters.Add(new ComplexTypeSchemaJsonConverter());
+            settings.Converters.Add(new SchemaBaseJsonConverter());
+            settings.Converters.Add(new EnumTypeSchemaConverter());
 
             return settings;
         }

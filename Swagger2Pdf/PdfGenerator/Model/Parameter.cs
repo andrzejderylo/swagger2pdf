@@ -8,5 +8,6 @@ namespace Swagger2Pdf.PdfGenerator.Model
         public bool IsRequired { get; set; }
         public string Description { get; set; }
         public Schema Schema { get; set; }
+        public string Type { get; set; }
     }
 }

@@ -19,6 +19,6 @@ namespace Swagger2Pdf.Model
         public string[] Schemes { get; set; }
 
         [JsonProperty("paths")]
-        public Dictionary<string, Dictionary<string, Path>> Paths { get; set; }
+        public Dictionary<string, Dictionary<string, Request>> Paths { get; set; }
     }
 }

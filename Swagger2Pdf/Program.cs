@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 using Swagger2Pdf.Model;
 using System.Collections.Generic;
@@ -33,14 +34,23 @@ namespace Swagger2Pdf
 
                 SwaggerPdfDocumentModel docModel = new SwaggerPdfDocumentModel();
                 docModel.PdfDocumentPath = "./documentation.pdf";
+                docModel.WelcomePageImage = "./image.png";
+                docModel.Title = obj.Info.Title;
+                docModel.Version = obj.Info.Version;
+                docModel.Author = "Author Authorski";
+                docModel.DocumentDate = DateTime.Now;
 
                 docModel.DocumentationEntries = obj.Paths.SelectMany(path => path.Value.Select( httpMethod =>
                     new EndpointInfo
                     {
                         EndpointPath = path.Key,
                         HttpMethod = httpMethod.Key,
+                        Deprecated = httpMethod.Value.Deprecated,
+                        Summary = httpMethod.Value.Summary,
                         UrlParameters = httpMethod.Value.Parameters?.Where(x => x.In == "query").Select(BuildParameter).ToList(),
                         BodyParameters = httpMethod.Value.Parameters?.Where(x => x.In == "body").Select(BuildParameter).ToList(),
+                        FormDataParameters = httpMethod.Value.Parameters?.Where(x => x.In == "formData").Select(BuildParameter).ToList(),
+                        PathParameters = httpMethod.Value.Parameters?.Where(x => x.In == "path").Select(BuildParameter).ToList(),
                         Responses = httpMethod.Value.Responses?.Select(BuildResponse).ToList()
                     })).ToList();
 
@@ -53,7 +63,9 @@ namespace Swagger2Pdf
             {
                 Name = parameter.Name,
                 IsRequired = parameter.ParameterRequired,
-                Schema = parameter.Schema?.CreateSchema()
+                Schema = parameter.Schema?.CreateSchema() ?? parameter.Items?.CreateSchema(),
+                Description = parameter.Description,
+                Type = parameter.Type,
             };
 
         private static PdfGenerator.Model.Response BuildResponse(KeyValuePair<string, Response> x) =>
@@ -61,7 +73,7 @@ namespace Swagger2Pdf
             {
                 Code = x.Key,
                 Description = x.Value.Description,
-                Schema = x.Value.Schema.CreateSchema()
+                Schema = x.Value.Schema?.CreateSchema()
             };
     }
 }

@@ -10,6 +10,9 @@ namespace Swagger2Pdf.Model
         [JsonProperty("in")]
         public string In { get; set; }
 
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
         [JsonProperty("required")]
         public bool ParameterRequired { get; set; }
 
@@ -21,5 +24,8 @@ namespace Swagger2Pdf.Model
 
         [JsonProperty("schema")]
         public PropertyBase Schema { get; set; }
+
+        [JsonProperty("items")]
+        public PropertyBase Items { get; set; }
     }
 }

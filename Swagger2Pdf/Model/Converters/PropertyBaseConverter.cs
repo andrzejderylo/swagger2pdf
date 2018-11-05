@@ -14,11 +14,13 @@ namespace Swagger2Pdf.Model.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken jObject = JToken.ReadFrom(reader);
+            string description = jObject["description"]?.ToString();
 
             if (jObject["$ref"] != null)
             {
                 return new ReferenceProperty
-                {
+                {   
+                    Description = description,
                     Ref = jObject["$ref"].ToString()
                 };
             }
@@ -29,6 +31,7 @@ namespace Swagger2Pdf.Model.Converters
             {
                 return new ArrayProperty
                 {
+                    Description = description,
                     Type = "array",
                     Items = CreateItemsProperty(jObject)
                 };
@@ -40,9 +43,13 @@ namespace Swagger2Pdf.Model.Converters
         private PropertyBase CreateItemsProperty(JToken jObject)
         {
             var arrayRef = jObject["items"]["$ref"]?.ToString();
-            var arrayType = jObject["items"]["type"]?.ToString();
             if (arrayRef == null)
-                return new Property { Type = arrayType };
+            {
+                var collectionFormat = jObject["collectionFormat"]?.ToString();
+                var property = jObject["items"].ToObject<Property>();
+                property.CollectionFormat = collectionFormat;
+                return property;
+            }
 
             return new ReferenceProperty { Ref = arrayRef };
         }

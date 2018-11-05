@@ -70,19 +70,23 @@
     <Compile Include="Model\Info.cs" />
     <Compile Include="Model\SwaggerInfo.cs" />
     <Compile Include="Model\Parameter.cs" />
-    <Compile Include="Model\Path.cs" />
+    <Compile Include="Model\Request.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\Response.cs" />
     <Compile Include="Model\SwaggerInfoDefinitions.cs" />
+    <Compile Include="PdfGenerator\MigradocHelpers.cs" />
     <Compile Include="PdfGenerator\Model\EndpointInfo.cs" />
     <Compile Include="PdfGenerator\Model\SwaggerPdfDocumentModel.cs" />
     <Compile Include="PdfGenerator\Model\Parameter.cs" />
     <Compile Include="PdfGenerator\Model\Response.cs" />
     <Compile Include="PdfGenerator\Schemas\ArraySchema.cs" />
     <Compile Include="PdfGenerator\Schemas\ComplexTypeSchema.cs" />
-    <Compile Include="PdfGenerator\Schemas\Schama.cs" />
+    <Compile Include="PdfGenerator\Schemas\EnumTypeSchema.cs" />
+    <Compile Include="PdfGenerator\Schemas\Schema.cs" />
     <Compile Include="PdfGenerator\Schemas\Serialization\ArraySchemaJsonConverter.cs" />
     <Compile Include="PdfGenerator\Schemas\Serialization\ComplexTypeSchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\EnumTypeSchemaConverter.cs" />
+    <Compile Include="PdfGenerator\Schemas\Serialization\SchemaBaseJsonConverter.cs" />
     <Compile Include="PdfGenerator\Schemas\Serialization\SchemaJsonConverter.cs" />
     <Compile Include="PdfGenerator\Schemas\Serialization\SimpleTypeSchemaJsonConverter.cs" />
     <Compile Include="PdfGenerator\Schemas\SimpleTypeSchema.cs" />
@@ -98,6 +102,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

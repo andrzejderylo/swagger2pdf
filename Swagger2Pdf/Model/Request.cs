@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Swagger2Pdf.Model
 {
-    public class Path
+    public class Request
     {
         [JsonProperty("tags")]
         public string[] Tags { get; set; }
@@ -11,8 +11,11 @@ namespace Swagger2Pdf.Model
         [JsonProperty("operationId")]
         public string OperationId { get; set; }
 
+        [JsonProperty("summary")]
+        public string Summary { get; set; }
+
         [JsonProperty("consumes")]
-        public object[] Consumes { get; set; }
+        public string[] Consumes { get; set; }
 
         [JsonProperty("produces")]
         public string[] Produces { get; set; }
@@ -22,7 +25,8 @@ namespace Swagger2Pdf.Model
 
         [JsonProperty("responses")]
         public Dictionary<string, Response> Responses { get; set; }
+
+        [JsonProperty("deprecated")]
+        public bool Deprecated { get; set; }
     }
-
-
 }
