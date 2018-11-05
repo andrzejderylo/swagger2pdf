@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Swagger2Pdf.PdfGenerator.Schemas.Serialization
 {
@@ -7,13 +6,9 @@ namespace Swagger2Pdf.PdfGenerator.Schemas.Serialization
     {
         protected override void WriteJson(JsonWriter writer, EnumTypeSchema value, JsonSerializer serializer)
         {
-            if (value.CollectionFormat == "multi")
-            {
-                serializer.Serialize(writer, value.EnumValues);
-                return;
-            }
-
-            serializer.Serialize(writer, value.Default ?? value.EnumValues.FirstOrDefault());
+            writer.WriteStartArray();
+            serializer.Serialize(writer, value.Type);
+            writer.WriteEndArray();
         }
     }
 }

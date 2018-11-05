@@ -1,13 +1,26 @@
-﻿using System.Drawing;
-using MigraDoc.DocumentObjectModel;
+﻿using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
-using Color = MigraDoc.DocumentObjectModel.Color;
 using Font = MigraDoc.DocumentObjectModel.Font;
 
 namespace Swagger2Pdf.PdfGenerator
 {
     internal static class MigradocHelpers
     {
+        public static Cell VerticallyCenteredContent(this Cell cell)
+        {   
+            cell.VerticalAlignment = VerticalAlignment.Center;
+            return cell;
+        }
+
+
+        public static Paragraph AddPageBreakableParagraph(this Section cell)
+        {
+            var paragraph = cell.AddParagraph();
+            paragraph.AddBorders();
+            paragraph.Format.KeepTogether = false;
+            return paragraph;
+        }
+
         public static Paragraph AddPageBreakableParagraph(this Section cell, string paragraphText)
         {
             var paragraph = cell.AddParagraph(paragraphText);
@@ -20,7 +33,7 @@ namespace Swagger2Pdf.PdfGenerator
         {   
             paragraph.Format.Borders = new Borders
             {
-                Color = BlackColor
+                Color = Colors.Black
             };
             return paragraph;
         }
@@ -58,22 +71,22 @@ namespace Swagger2Pdf.PdfGenerator
         public static Table AddBorderedTable(this Section section)
         {
             var table = section.AddTable();
-            table.Borders = new Borders { Color = BlackColor };
+            table.Borders = new Borders { Color = Colors.Black };
             return table;
         }
-
-        public static readonly Color BlackColor = Color.FromCmyk(100, 100, 100, 100);
 
         public static Style FixedCharLengthStyle()
         {
             return new Style("FixedCharLengthStyle", "Normal")
             {
-                Font = new Font("Courier New")
-                {
-                    Size = Unit.FromPoint(9)
-                }
+                Font = FixedCharLengthFont
             };
         }
+
+        public static Font FixedCharLengthFont => new Font("Courier New")
+        {
+            Size = Unit.FromPoint(9)
+        };
 
         public static Style Header()
         {
@@ -107,7 +120,8 @@ namespace Swagger2Pdf.PdfGenerator
             {
                 Font =
                 {
-                    Size = Unit.FromPoint(18),
+                    Size = Unit.FromPoint(20),
+                    Bold = true
                 }
             };
             return style;

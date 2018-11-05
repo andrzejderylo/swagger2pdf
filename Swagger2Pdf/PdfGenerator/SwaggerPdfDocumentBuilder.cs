@@ -9,27 +9,32 @@ namespace Swagger2Pdf.PdfGenerator
 {
     public class SwaggerPdfDocumentBuilder
     {
+        private readonly Document _document;
+
+        public SwaggerPdfDocumentBuilder()
+        {
+            _document = new Document();
+        }
+
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
         {
-            Document document = new Document();
-            document.DefineStyles();
+            _document.DefineStyles();
 
-            DrawWelcomePage(document, swaggerDocumentModel);
-            DrawAuthorizationInfoPage(document, swaggerDocumentModel);
-            DrawEndpointDocumentation(document, swaggerDocumentModel);
+            DrawWelcomePage(_document, swaggerDocumentModel);
+            DrawAuthorizationInfoPage(_document, swaggerDocumentModel);
+            DrawEndpointDocumentation(_document, swaggerDocumentModel);
 
-            PdfDocumentRenderer renderer = new PdfDocumentRenderer();
-            renderer.Document = document;
+            var renderer = new PdfDocumentRenderer { Document = _document };
             renderer.RenderDocument();
             renderer.PdfDocument.Save(swaggerDocumentModel.PdfDocumentPath);
         }
 
-        private void DrawWelcomePage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawWelcomePage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             var welcomeSection = pdfDocument.AddSection();
             var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
             if (imageFile.Exists)
-            {   
+            {
                 var image = welcomeSection.AddImage(imageFile.FullName);
                 image.Left = ShapePosition.Center;
             }
@@ -40,12 +45,13 @@ namespace Swagger2Pdf.PdfGenerator
             welcomeSection.AddParagraph(swaggerDocumentModel.DocumentDate.ToShortDateString()).Centered();
         }
 
-        private void DrawAuthorizationInfoPage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawAuthorizationInfoPage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
-
+            var authorizationSection = pdfDocument.AddSection();
+            authorizationSection.AddParagraph("Authorization information").AsHeader();
         }
 
-        private void DrawEndpointDocumentation(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawEndpointDocumentation(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             foreach (var docEntry in swaggerDocumentModel.DocumentationEntries)
             {
@@ -60,7 +66,7 @@ namespace Swagger2Pdf.PdfGenerator
             }
         }
 
-        private void DrawPathParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawPathParameters(EndpointInfo docEntry, Section pathSection)
         {
             if (docEntry.PathParameters != null && docEntry.PathParameters.Any())
             {
@@ -78,23 +84,24 @@ namespace Swagger2Pdf.PdfGenerator
                 row[2].AddParagraph("Schema");
                 row[3].AddParagraph("Description");
 
-                foreach (var queryParameter in docEntry.PathParameters)
+                foreach (var pathParameter in docEntry.PathParameters)
                 {
                     row = table.AddRow();
-                    row[0].AddParagraph(queryParameter.Name ?? "");
-                    row[1].AddParagraph(queryParameter.Type ?? "");
-                    var schema = SwaggerPdfJsonConvert.SerializeObject(queryParameter.Schema);
+                    row[0].VerticallyCenteredContent().AddParagraph(pathParameter.Name ?? "");
+                    row[1].VerticallyCenteredContent().AddParagraph(pathParameter.Type ?? "");
+                    var schema = SwaggerPdfJsonConvert.SerializeObject(pathParameter.Schema);
                     if (schema != "null")
                     {
-                        row[2].AddParagraph(schema).AsFixedCharLength();
+                        row[2].VerticallyCenteredContent().AddParagraph(schema).AsFixedCharLength();
                     }
 
-                    row[3].AddParagraph(queryParameter.Description ?? "");
+                    var description = row[3].VerticallyCenteredContent().AddParagraph(pathParameter.Description ?? "");
+                    pathParameter.Schema?.WriteDetailedDescription(description);
                 }
             }
         }
 
-        private void DrawResponses(EndpointInfo docEntry, Section pathSection)
+        private static void DrawResponses(EndpointInfo docEntry, Section pathSection)
         {
             if (docEntry.Responses != null)
             {
@@ -102,7 +109,7 @@ namespace Swagger2Pdf.PdfGenerator
                 pathSection.AddParagraph("Responses").AsSubHeader();
 
                 foreach (var response in docEntry.Responses)
-                {   
+                {
                     pathSection.AddPageBreakableParagraph($"{response.Code}: {response.Description}").AddBorders();
                     var responseBody = SwaggerPdfJsonConvert.SerializeObject(response.Schema);
                     if (responseBody != "null")
@@ -115,7 +122,7 @@ namespace Swagger2Pdf.PdfGenerator
             }
         }
 
-        private void DrawEndpointHeader(EndpointInfo docEntry, Section pathSection)
+        private static void DrawEndpointHeader(EndpointInfo docEntry, Section pathSection)
         {
             var headerParagraph = pathSection.AddParagraph($"{docEntry.HttpMethod.ToUpper()} {docEntry.EndpointPath}").AsHeader();
             var summaryParagraph = pathSection.AddParagraph(docEntry.Summary);
@@ -129,7 +136,7 @@ namespace Swagger2Pdf.PdfGenerator
             }
         }
 
-        private void DrawBodyParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawBodyParameters(EndpointInfo docEntry, Section pathSection)
         {
             if (docEntry.BodyParameters != null && docEntry.BodyParameters.Any())
             {
@@ -143,7 +150,7 @@ namespace Swagger2Pdf.PdfGenerator
             }
         }
 
-        private void DrawFormDataParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawFormDataParameters(EndpointInfo docEntry, Section pathSection)
         {
             if (docEntry.FormDataParameters != null && docEntry.FormDataParameters.Any())
             {
@@ -162,14 +169,15 @@ namespace Swagger2Pdf.PdfGenerator
                 foreach (var parameter in docEntry.FormDataParameters)
                 {
                     row = table.AddRow();
-                    row[0].AddParagraph(parameter.Name ?? "");
-                    row[1].AddParagraph(parameter.Type ?? "");
-                    row[2].AddParagraph(parameter.Description ?? "");
+                    row[0].VerticallyCenteredContent().AddParagraph(parameter.Name ?? "");
+                    row[1].VerticallyCenteredContent().AddParagraph(parameter.Type ?? "");
+                    var description = row[2].VerticallyCenteredContent().AddParagraph(parameter.Description ?? "");
+                    parameter.Schema?.WriteDetailedDescription(description);
                 }
             }
         }
 
-        private void DrawUrlParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawUrlParameters(EndpointInfo docEntry, Section pathSection)
         {
             if (docEntry.UrlParameters != null && docEntry.UrlParameters.Any())
             {
@@ -190,15 +198,16 @@ namespace Swagger2Pdf.PdfGenerator
                 foreach (var queryParameter in docEntry.UrlParameters)
                 {
                     row = table.AddRow();
-                    row[0].AddParagraph(queryParameter.Name ?? "");
-                    row[1].AddParagraph(queryParameter.Type);
+                    row[0].VerticallyCenteredContent().AddParagraph(queryParameter.Name ?? "");
+                    row[1].VerticallyCenteredContent().AddParagraph(queryParameter.Type);
                     var schema = SwaggerPdfJsonConvert.SerializeObject(queryParameter.Schema);
                     if (schema != "null")
                     {
-                        row[2].AddParagraph(schema).AsFixedCharLength();
+                        row[2].VerticallyCenteredContent().AddParagraph(schema).AsFixedCharLength();
                     }
 
-                    row[3].AddParagraph(queryParameter.Description ?? "");
+                    var description = row[3].VerticallyCenteredContent().AddParagraph(queryParameter.Description ?? "");
+                    queryParameter.Schema?.WriteDetailedDescription(description);
                 }
             }
         }
