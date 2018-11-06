@@ -3,4 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>-i https://petstore.swagger.io/v2/swagger.json -o ./documentation.pdf -p ./image.png -f POST:/pet GET:/pet/findByStatus</StartArguments>
+  </PropertyGroup>
 </Project>

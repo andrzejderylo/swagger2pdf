@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
+using Swagger2Pdf.Filters;
 using Swagger2Pdf.Model.Properties;
 using Swagger2Pdf.PdfGenerator;
 using Swagger2Pdf.PdfGenerator.Model;
@@ -20,7 +22,7 @@ namespace Swagger2Pdf
     {
         static void Main(string[] args)
         {
-#if DEBUG
+#if !DEBUG
             Perform(new CommandLineInputParameters
             {
                 InputFileName = "https://petstore.swagger.io/v2/swagger.json",
@@ -59,7 +61,7 @@ namespace Swagger2Pdf
             docModel.Version = parameters.Version ?? swaggerJsonInfo.Info.Version;
             docModel.Author = parameters.Author ?? "";
             docModel.DocumentDate = DateTime.Now;
-            docModel.DocumentationEntries = PrepareDocumentationEntries(swaggerJsonInfo);
+            docModel.DocumentationEntries = PrepareDocumentationEntries(parameters.IncludeOnlyEndpoints, swaggerJsonInfo);
             docModel.AuthorizationInfos = PrepareAuthorizationInfos(swaggerJsonInfo);
 
             return docModel;
@@ -70,8 +72,12 @@ namespace Swagger2Pdf
             return swaggerJsonInfo.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
         }
 
-        private static List<EndpointInfo> PrepareDocumentationEntries(SwaggerInfo swaggerJsonInfo)
+        private static List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> includeOnlyEndpoints, SwaggerInfo swaggerJsonInfo)
         {
+            var endpointsToInclude = includeOnlyEndpoints?.ToList() ?? new List<string>();
+            endpointsToInclude.Select(EndpointFilterFactory.CreateEndpointFilter).ToList();
+            
+
             return swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
                  new EndpointInfo
                  {

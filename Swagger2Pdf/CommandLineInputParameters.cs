@@ -12,15 +12,15 @@ namespace Swagger2Pdf
         public string OutputFileName { get; set; }
 
         [Option('f', "filter", Required = false, HelpText = "")]
-        public List<string> IncludeOnlyEndpoints { get; set; } = new List<string>();
+        public IEnumerable<string> IncludeOnlyEndpoints { get; set; }
 
-        [Option('i', "image", Required = false, HelpText = "First page company logo image. Maximum recommended width is 600px")]
+        [Option('p', "picture", Required = false, HelpText = "First page company logo picture. Maximum recommended width is 600px")]
         public string WelcomePageImagePath { get; set; }
 
-        [Option('a', "Author", Required = false, HelpText = "Overrides author name obtained from swagger.json")]
+        [Option('a', "Author", Required = false, HelpText = "Includes documentation author")]
         public string Author { get; set; }
 
-        [Option('t', "title", Required = false, HelpText = "Overrides title obrainted from swagger.json")]
+        [Option('t', "title", Required = false, HelpText = "Overrides title obtained from swagger.json")]
         public string Title { get; set; }
 
         [Option('v', "version", Required = false, HelpText = "Overrides version obtained from swagger.json")]

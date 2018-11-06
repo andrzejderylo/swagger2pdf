@@ -73,6 +73,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineInputParameters.cs" />
+    <Compile Include="Filters\EndpointFilter.cs" />
+    <Compile Include="Filters\EndpointFilterFactory.cs" />
     <Compile Include="Model\Converters\SecurityDefinitionConverter.cs" />
     <Compile Include="Model\Properties\ArrayProperty.cs" />
     <Compile Include="Model\Converters\PropertyBaseConverter.cs" />
