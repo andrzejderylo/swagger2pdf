@@ -32,11 +32,14 @@ namespace Swagger2Pdf.PdfGenerator
         private static void DrawWelcomePage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             var welcomeSection = pdfDocument.AddSection();
-            var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
-            if (imageFile.Exists)
+            if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
             {
-                var image = welcomeSection.AddImage(imageFile.FullName);
-                image.Left = ShapePosition.Center;
+                var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
+                if (imageFile.Exists)
+                {
+                    var image = welcomeSection.AddImage(imageFile.FullName);
+                    image.Left = ShapePosition.Center;
+                }
             }
 
             welcomeSection.AddParagraph(swaggerDocumentModel.Title).AsTitle().Centered();
@@ -134,7 +137,7 @@ namespace Swagger2Pdf.PdfGenerator
 
         private static void DrawEndpointHeader(EndpointInfo docEntry, Section pathSection)
         {
-            var headerParagraph = pathSection.AddParagraph($"{docEntry.HttpMethod.ToUpper()} {docEntry.EndpointPath}").AsHeader();
+            var headerParagraph = pathSection.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}").AsHeader();
             var summaryParagraph = pathSection.AddParagraph(docEntry.Summary);
             if (docEntry.Deprecated)
             {

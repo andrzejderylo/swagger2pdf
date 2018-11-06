@@ -5,7 +5,7 @@ namespace Swagger2Pdf.Filters
 {
     public static class EndpointFilterFactory
     {
-        private static readonly Regex EndpointFilterRegex = new Regex(@"^[A-Z]*:?\/[a-zA-Z0-9\/]*$");
+        private static readonly Regex EndpointFilterRegex = new Regex(@"^[A-Z]*:?\/[a-zA-Z0-9\/]*\*?[a-zA-Z0-9]*[\/{A-Za-z0-9}]*$");
 
         public static EndpointFilter CreateEndpointFilter(string endpointFilterString)
         {   

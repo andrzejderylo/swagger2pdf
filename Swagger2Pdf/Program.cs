@@ -75,14 +75,14 @@ namespace Swagger2Pdf
         private static List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> includeOnlyEndpoints, SwaggerInfo swaggerJsonInfo)
         {
             var endpointsToInclude = includeOnlyEndpoints?.ToList() ?? new List<string>();
-            endpointsToInclude.Select(EndpointFilterFactory.CreateEndpointFilter).ToList();
+            var filters = endpointsToInclude.Select(EndpointFilterFactory.CreateEndpointFilter).ToList();
             
 
-            return swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
+            List<EndpointInfo> endpointInfos = swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
                  new EndpointInfo
                  {
                      EndpointPath = path.Key,
-                     HttpMethod = httpMethod.Key,
+                     HttpMethod = httpMethod.Key.ToUpper(),
                      Deprecated = httpMethod.Value.Deprecated,
                      Summary = httpMethod.Value.Summary,
                      UrlParameters = httpMethod.Value.Parameters?.Where(x => x.In == "query").Select(BuildParameter)
@@ -95,6 +95,14 @@ namespace Swagger2Pdf
                          .ToList(),
                      Responses = httpMethod.Value.Responses?.Select(BuildResponse).ToList(),
                  })).ToList();
+
+            var resultEndpoints = new List<EndpointInfo>();
+            foreach (var filter in filters)
+            {
+                resultEndpoints.AddRange(endpointInfos.Where(x => filter.MatchEndpoint(x.HttpMethod, x.EndpointPath)));
+            }
+
+            return resultEndpoints;
         }
 
         private static SwaggerInfo ParseSwaggerJsonInfo(string jsonString)
