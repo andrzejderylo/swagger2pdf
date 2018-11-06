@@ -34,7 +34,7 @@ namespace Swagger2Pdf.Tests
         }
 
         [Test]
-        public void EndpointFilterFactory_ShouldProduceProperFilter()
+        public void EndpointFilterFactory_ShouldParse_MethodColonAndEndpoint()
         {
             // Arrange
 
@@ -43,6 +43,31 @@ namespace Swagger2Pdf.Tests
 
             // Assert
             endpointFilter.Should().BeEquivalentTo(new EndpointFilter("POST", "/api/Pets"));
+        }
+        
+        [Test]
+        public void EndpointFilterFactory_ShouldParse_ColonAndEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var endpointFilter = EndpointFilterFactory.CreateEndpointFilter(":/api/Pets");
+
+            // Assert
+            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets"));
+        }
+
+        
+        [Test]
+        public void EndpointFilterFactory_ShouldParse_EndpointOnly()
+        {
+            // Arrange
+
+            // Act
+            var endpointFilter = EndpointFilterFactory.CreateEndpointFilter("/api/Pets");
+
+            // Assert
+            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets"));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Swagger2Pdf.Filters
                 return new EndpointFilter(httpMethod, httpEndpoint);
             }
 
-            return new EndpointFilter(splittedEndpointFilterString[0], null);
+            return new EndpointFilter(null, splittedEndpointFilterString[0]);
         }
     }
 
