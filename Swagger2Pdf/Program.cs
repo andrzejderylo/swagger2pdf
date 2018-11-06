@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CommandLine;
+using Swagger2Pdf.Model.Properties;
 using Swagger2Pdf.PdfGenerator;
 using Swagger2Pdf.PdfGenerator.Model;
 using Parameter = Swagger2Pdf.Model.Parameter;
@@ -59,8 +60,14 @@ namespace Swagger2Pdf
             docModel.Author = parameters.Author ?? "";
             docModel.DocumentDate = DateTime.Now;
             docModel.DocumentationEntries = PrepareDocumentationEntries(swaggerJsonInfo);
+            docModel.AuthorizationInfos = PrepareAuthorizationInfos(swaggerJsonInfo);
 
             return docModel;
+        }
+
+        private static Dictionary<string, AuthorizationInfo> PrepareAuthorizationInfos(SwaggerInfo swaggerJsonInfo)
+        {
+            return swaggerJsonInfo.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
         }
 
         private static List<EndpointInfo> PrepareDocumentationEntries(SwaggerInfo swaggerJsonInfo)
@@ -80,7 +87,7 @@ namespace Swagger2Pdf
                          .Select(BuildParameter).ToList(),
                      PathParameters = httpMethod.Value.Parameters?.Where(x => x.In == "path").Select(BuildParameter)
                          .ToList(),
-                     Responses = httpMethod.Value.Responses?.Select(BuildResponse).ToList()
+                     Responses = httpMethod.Value.Responses?.Select(BuildResponse).ToList(),
                  })).ToList();
         }
 
@@ -95,7 +102,7 @@ namespace Swagger2Pdf
                 return settings;
             };
 
-            return JsonConvert.DeserializeObject<SwaggerInfo>(jsonString, new Model.Converters.PropertyBaseConverter());
+            return JsonConvert.DeserializeObject<SwaggerInfo>(jsonString, new Model.Converters.PropertyBaseConverter(), new Model.Converters.SecurityDefinitionConverter());
         }
 
         private static string GetSwaggerJsonString(string inputFileName)

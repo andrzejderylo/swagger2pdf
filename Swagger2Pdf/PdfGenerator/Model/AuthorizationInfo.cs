@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
+using MigraDoc.DocumentObjectModel;
 
 namespace Swagger2Pdf.PdfGenerator.Model
 {
-    public class AuthorizationInfo
-    {
+    public abstract class AuthorizationInfo
+    {   
+        public string Type { get; set; }
+
+        public abstract void WriteAuthorizationInfo(Paragraph paragraph);
     }
 }

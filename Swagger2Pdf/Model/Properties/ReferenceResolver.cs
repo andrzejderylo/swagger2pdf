@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json.Serialization;
 
-namespace Swagger2Pdf.Model
+namespace Swagger2Pdf.Model.Properties
 {
     public class ReferenceResolver : IReferenceResolver
     {

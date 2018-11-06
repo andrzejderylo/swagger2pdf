@@ -73,36 +73,42 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineInputParameters.cs" />
-    <Compile Include="Model\ArrayProperty.cs" />
+    <Compile Include="Model\Converters\SecurityDefinitionConverter.cs" />
+    <Compile Include="Model\Properties\ArrayProperty.cs" />
     <Compile Include="Model\Converters\PropertyBaseConverter.cs" />
     <Compile Include="Model\Definition.cs" />
     <Compile Include="Model\PropertyBase.cs" />
-    <Compile Include="Model\ReferenceProperty.cs" />
-    <Compile Include="Model\ReferenceResolver.cs" />
+    <Compile Include="Model\Properties\ReferenceProperty.cs" />
+    <Compile Include="Model\Properties\ReferenceResolver.cs" />
     <Compile Include="Model\Info.cs" />
+    <Compile Include="Model\SecurityDefinition.cs" />
+    <Compile Include="Model\SecurityDefinitions\OAuthSecurityDefinition.cs" />
+    <Compile Include="Model\SecurityDefinitions\ParameterSecurityDefinition.cs" />
     <Compile Include="Model\SwaggerInfo.cs" />
     <Compile Include="Model\Parameter.cs" />
     <Compile Include="Model\Request.cs" />
-    <Compile Include="Model\Property.cs" />
+    <Compile Include="Model\Properties\Property.cs" />
     <Compile Include="Model\Response.cs" />
     <Compile Include="Model\SwaggerInfoDefinitions.cs" />
     <Compile Include="PdfGenerator\MigradocHelpers.cs" />
     <Compile Include="PdfGenerator\Model\AuthorizationInfo.cs" />
     <Compile Include="PdfGenerator\Model\EndpointInfo.cs" />
+    <Compile Include="PdfGenerator\Model\AuthorizationInformation\OAuthAuthorizationInfo.cs" />
+    <Compile Include="PdfGenerator\Model\AuthorizationInformation\ParameterAuthorizationInfo.cs" />
     <Compile Include="PdfGenerator\Model\SwaggerPdfDocumentModel.cs" />
     <Compile Include="PdfGenerator\Model\Parameter.cs" />
     <Compile Include="PdfGenerator\Model\Response.cs" />
-    <Compile Include="PdfGenerator\Schemas\ArraySchema.cs" />
-    <Compile Include="PdfGenerator\Schemas\ComplexTypeSchema.cs" />
-    <Compile Include="PdfGenerator\Schemas\EnumTypeSchema.cs" />
-    <Compile Include="PdfGenerator\Schemas\Schema.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\ArraySchemaJsonConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\ComplexTypeSchemaJsonConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\EnumTypeSchemaConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\SchemaBaseJsonConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\SchemaJsonConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\Serialization\SimpleTypeSchemaJsonConverter.cs" />
-    <Compile Include="PdfGenerator\Schemas\SimpleTypeSchema.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\ArraySchema.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\ComplexTypeSchema.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\EnumTypeSchema.cs" />
+    <Compile Include="PdfGenerator\Model\Schema.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\ArraySchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\ComplexTypeSchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\EnumTypeSchemaConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\SchemaBaseJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\SchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\Serialization\SimpleTypeSchemaJsonConverter.cs" />
+    <Compile Include="PdfGenerator\Model\Schemas\SimpleTypeSchema.cs" />
     <Compile Include="PdfGenerator\SwaggerPdfDocumentBuilder.cs" />
     <Compile Include="PdfGenerator\SwaggerPdfJsonConvert.cs" />
     <Compile Include="Program.cs" />
@@ -120,5 +126,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,4 @@
-﻿using Swagger2Pdf.PdfGenerator.Schemas;
-
-namespace Swagger2Pdf.PdfGenerator.Model
+﻿namespace Swagger2Pdf.PdfGenerator.Model
 {
     public class Parameter
     {

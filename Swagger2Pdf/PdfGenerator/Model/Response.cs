@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Swagger2Pdf.PdfGenerator.Schemas;
 
 namespace Swagger2Pdf.PdfGenerator.Model
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Swagger2Pdf.Model.Properties;
 
 namespace Swagger2Pdf.Model.Converters
 {

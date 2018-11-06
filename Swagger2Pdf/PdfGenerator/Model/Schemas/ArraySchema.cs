@@ -1,6 +1,4 @@
-﻿using MigraDoc.DocumentObjectModel;
-
-namespace Swagger2Pdf.PdfGenerator.Schemas
+﻿namespace Swagger2Pdf.PdfGenerator.Model.Schemas
 {
     public class ArraySchema : Schema
     {

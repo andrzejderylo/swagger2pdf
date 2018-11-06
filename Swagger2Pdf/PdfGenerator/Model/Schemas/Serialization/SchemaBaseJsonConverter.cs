@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Swagger2Pdf.PdfGenerator.Schemas.Serialization
+namespace Swagger2Pdf.PdfGenerator.Model.Schemas.Serialization
 {
     public class SchemaBaseJsonConverter : SchemaJsonConverter<Schema>
     {

@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Swagger2Pdf.PdfGenerator.Schemas;
+using Swagger2Pdf.PdfGenerator.Model;
+using Swagger2Pdf.PdfGenerator.Model.Schemas;
 
-namespace Swagger2Pdf.Model
+namespace Swagger2Pdf.Model.Properties
 {
     public sealed class ReferenceProperty : PropertyBase
     {

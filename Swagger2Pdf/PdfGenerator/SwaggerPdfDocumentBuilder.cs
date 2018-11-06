@@ -43,12 +43,21 @@ namespace Swagger2Pdf.PdfGenerator
             welcomeSection.AddParagraph(swaggerDocumentModel.Author).AsHeader().Centered();
             welcomeSection.AddParagraph(swaggerDocumentModel.Version).Centered();
             welcomeSection.AddParagraph(swaggerDocumentModel.DocumentDate.ToShortDateString()).Centered();
+            welcomeSection.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
         }
 
         private static void DrawAuthorizationInfoPage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             var authorizationSection = pdfDocument.AddSection();
             authorizationSection.AddParagraph("Authorization information").AsHeader();
+            authorizationSection.AddParagraph();
+            foreach (var authorizationInfo in swaggerDocumentModel.AuthorizationInfos)
+            {
+                authorizationSection.AddParagraph($"Authorization option: {authorizationInfo.Key}").AsSubHeader().Bold();
+                authorizationSection.AddParagraph();
+                authorizationInfo.Value.WriteAuthorizationInfo(authorizationSection.AddParagraph());
+                authorizationSection.AddParagraph();
+            }
         }
 
         private static void DrawEndpointDocumentation(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
@@ -63,6 +72,7 @@ namespace Swagger2Pdf.PdfGenerator
                 DrawFormDataParameters(docEntry, pathSection);
                 DrawBodyParameters(docEntry, pathSection);
                 DrawResponses(docEntry, pathSection);
+                pathSection.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
             }
         }
 

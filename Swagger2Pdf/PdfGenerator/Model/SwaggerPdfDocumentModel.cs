@@ -12,5 +12,6 @@ namespace Swagger2Pdf.PdfGenerator.Model
         public string Version { get; set; }
         public string Author { get; set; }
         public DateTime DocumentDate { get; set; }
+        public Dictionary<string, AuthorizationInfo> AuthorizationInfos { get; set; }
     }
 }

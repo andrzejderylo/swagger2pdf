@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using Swagger2Pdf.PdfGenerator.Schemas.Serialization;
+using Swagger2Pdf.PdfGenerator.Model.Schemas.Serialization;
 
 namespace Swagger2Pdf.PdfGenerator
 {

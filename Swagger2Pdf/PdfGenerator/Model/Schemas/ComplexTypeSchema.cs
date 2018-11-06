@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Swagger2Pdf.PdfGenerator.Schemas
+namespace Swagger2Pdf.PdfGenerator.Model.Schemas
 {
     public class ComplexTypeSchema : Schema
     {

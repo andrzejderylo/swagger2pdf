@@ -12,6 +12,11 @@ namespace Swagger2Pdf.PdfGenerator
             return cell;
         }
 
+        public static Paragraph PullRight(this Paragraph paragraph)
+        {
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            return paragraph;
+        }
 
         public static Paragraph AddPageBreakableParagraph(this Section cell)
         {
@@ -65,6 +70,12 @@ namespace Swagger2Pdf.PdfGenerator
         public static Paragraph AsSubHeader(this Paragraph paragraph)
         {
             paragraph.Style = "SubHeader";
+            return paragraph;
+        }
+
+        public static Paragraph Bold(this Paragraph paragraph)
+        {
+            paragraph.Format.Font.Bold = true;
             return paragraph;
         }
 
