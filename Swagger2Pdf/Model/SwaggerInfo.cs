@@ -6,6 +6,9 @@ namespace Swagger2Pdf.Model
 {
     public class SwaggerInfo
     {
+        [JsonProperty("definitions")]
+        public Dictionary<string, Definition> Definitions { get; set; } = new Dictionary<string, Definition>();
+
         [JsonProperty("swagger")]
         public string Swagger { get; set; }
 
@@ -23,6 +26,5 @@ namespace Swagger2Pdf.Model
 
         [JsonProperty("securityDefinitions")]
         public Dictionary<string, SecurityDefinition> SecurityDefinitions { get; set; }
-
     }
 }

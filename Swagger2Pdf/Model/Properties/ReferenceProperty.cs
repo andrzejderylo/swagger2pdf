@@ -1,48 +1,33 @@
-﻿using Newtonsoft.Json;
-using Swagger2Pdf.PdfGenerator.Model;
+﻿using Swagger2Pdf.PdfGenerator.Model;
 using Swagger2Pdf.PdfGenerator.Model.Schemas;
 
 namespace Swagger2Pdf.Model.Properties
 {
     public sealed class ReferenceProperty : PropertyBase
     {
-        private string _ref;
-        private Definition _definition;
+        public string Ref { get; set; }
 
-        [JsonProperty("$ref")]
-        public string Ref
-        {
-            get => _ref;
-            set { _ref = value; TryResolveReference(); }
-        }
-
-        private void TryResolveReference()
-        {
-            _definition = SwaggerInfoDefinitions.ResolveReference(Ref);
-        }
-
-        public Definition Definition
-        {
-            get
-            {
-                if (_definition == null)
-                {
-                    TryResolveReference();
-                }
-                return _definition;
-            }
-            set => _definition = value;
-        }
-
-        public override Schema CreateSchema()
+        public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
         {
             var complexTypeSchema = new ComplexTypeSchema();
-            foreach (var property in Definition.Properties)
-            {
-                complexTypeSchema.AddProperty(property.Key, property.Value.CreateSchema());
+            var definition = resolutionContext.ReferenceResolver.ResolveReference(null, Ref);
+
+            foreach (var property in definition.Properties)
+            {   
+                complexTypeSchema.AddProperty(property.Key, property.Value.ResolveSchema(resolutionContext));
             }
 
             return complexTypeSchema;
+        }
+    }
+
+    public class SchemaResolutionContext
+    {
+        public ReferenceResolver.ReferenceResolver ReferenceResolver { get; }
+
+        public SchemaResolutionContext(ReferenceResolver.ReferenceResolver referenceResolver)
+        {
+            ReferenceResolver = referenceResolver;
         }
     }
 }

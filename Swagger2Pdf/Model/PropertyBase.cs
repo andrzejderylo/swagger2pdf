@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Swagger2Pdf.Model.Properties;
 using Swagger2Pdf.PdfGenerator.Model;
 
 namespace Swagger2Pdf.Model
@@ -8,6 +9,6 @@ namespace Swagger2Pdf.Model
         [JsonProperty("description")]
         public string Description { get; set; }
 
-        public abstract Schema CreateSchema();
+        public abstract Schema ResolveSchema(SchemaResolutionContext resolutionContext);
     }
 }

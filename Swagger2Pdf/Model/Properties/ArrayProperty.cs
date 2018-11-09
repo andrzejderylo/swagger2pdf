@@ -11,9 +11,9 @@ namespace Swagger2Pdf.Model.Properties
 
         public PropertyBase Items { get; set; }
 
-        public override Schema CreateSchema()
+        public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
         {
-            return new ArraySchema(Items.CreateSchema());
+            return new ArraySchema(Items.ResolveSchema(resolutionContext));
         }
     }
 }

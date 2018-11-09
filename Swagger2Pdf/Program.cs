@@ -10,7 +10,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
 using Swagger2Pdf.Filters;
+using Swagger2Pdf.Model.Converters;
 using Swagger2Pdf.Model.Properties;
+using Swagger2Pdf.Model.ReferenceResolver;
 using Swagger2Pdf.PdfGenerator;
 using Swagger2Pdf.PdfGenerator.Model;
 using Parameter = Swagger2Pdf.Model.Parameter;
@@ -106,17 +108,28 @@ namespace Swagger2Pdf
         }
 
         private static SwaggerInfo ParseSwaggerJsonInfo(string jsonString)
-        {
-            JsonConvert.DeserializeObject<SwaggerInfoDefinitions>(jsonString, new Model.Converters.PropertyBaseConverter());
+        {   
+            var referenceResolver = JsonConvert.DeserializeObject<ReferenceResolver>(jsonString);
 
             JsonConvert.DefaultSettings = () =>
             {
                 var settings = new JsonSerializerSettings();
-                settings.ReferenceResolverProvider = () => new ReferenceResolver();
+                if (settings.Converters == null)
+                {
+                    settings.Converters = new List<JsonConverter>();
+                }
+
+                settings.Converters.Add(new PropertyBaseConverter());
+                settings.Converters.Add(new SecurityDefinitionConverter());
                 return settings;
             };
+            
 
-            return JsonConvert.DeserializeObject<SwaggerInfo>(jsonString, new Model.Converters.PropertyBaseConverter(), new Model.Converters.SecurityDefinitionConverter());
+
+
+            var swaggerInfo = JsonConvert.DeserializeObject<SwaggerInfo>(jsonString);//, new Model.Converters.SecurityDefinitionConverter());
+            return swaggerInfo;
+
         }
 
         private static string GetSwaggerJsonString(string inputFileName)
@@ -162,7 +175,7 @@ namespace Swagger2Pdf
             {
                 Name = parameter.Name,
                 IsRequired = parameter.ParameterRequired,
-                Schema = parameter.Schema?.CreateSchema() ?? parameter.Items?.CreateSchema(),
+                Schema = parameter.Schema?.ResolveSchema() ?? parameter.Items?.ResolveSchema(),
                 Description = parameter.Description,
                 Type = parameter.Type,
             };
@@ -172,7 +185,7 @@ namespace Swagger2Pdf
             {
                 Code = x.Key,
                 Description = x.Value.Description,
-                Schema = x.Value.Schema?.CreateSchema()
+                Schema = x.Value.Schema?.ResolveSchema()
             };
     }
 }

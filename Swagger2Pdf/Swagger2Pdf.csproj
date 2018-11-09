@@ -81,7 +81,7 @@
     <Compile Include="Model\Definition.cs" />
     <Compile Include="Model\PropertyBase.cs" />
     <Compile Include="Model\Properties\ReferenceProperty.cs" />
-    <Compile Include="Model\Properties\ReferenceResolver.cs" />
+    <Compile Include="Model\ReferenceResolver\ReferenceResolver.cs" />
     <Compile Include="Model\Info.cs" />
     <Compile Include="Model\SecurityDefinition.cs" />
     <Compile Include="Model\SecurityDefinitions\OAuthSecurityDefinition.cs" />
@@ -91,7 +91,6 @@
     <Compile Include="Model\Request.cs" />
     <Compile Include="Model\Properties\Property.cs" />
     <Compile Include="Model\Response.cs" />
-    <Compile Include="Model\SwaggerInfoDefinitions.cs" />
     <Compile Include="PdfGenerator\MigradocHelpers.cs" />
     <Compile Include="PdfGenerator\Model\AuthorizationInfo.cs" />
     <Compile Include="PdfGenerator\Model\EndpointInfo.cs" />

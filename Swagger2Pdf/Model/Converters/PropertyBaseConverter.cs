@@ -14,25 +14,27 @@ namespace Swagger2Pdf.Model.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JToken jObject = JToken.ReadFrom(reader);
-            string description = jObject["description"]?.ToString();
+            var jObject = JToken.ReadFrom(reader);
+            var @ref = jObject["$ref"]?.ToString();
+            var @enum = jObject["enum"]?.ToString();
+            var type = jObject["type"]?.ToString();
 
-            if (jObject["$ref"] != null)
+            if (!string.IsNullOrEmpty(@ref))
+            {   
+                return ResolveReferenceProperty(@ref, jObject, serializer);
+            }
+            
+            if (!string.IsNullOrEmpty(@enum))
             {
-                return new ReferenceProperty
-                {   
-                    Description = description,
-                    Ref = jObject["$ref"].ToString()
-                };
+                var enumProperty = jObject.ToObject<EnumProperty>();
+                return enumProperty;
             }
 
-            string type = jObject["type"]?.ToString();
-
             if (!string.IsNullOrEmpty(type) && type == "array")
-            {
+            {   
                 return new ArrayProperty
                 {
-                    Description = description,
+                    Description = jObject["description"]?.ToString(),
                     Type = "array",
                     Items = CreateItemsProperty(jObject)
                 };
@@ -52,7 +54,8 @@ namespace Swagger2Pdf.Model.Converters
                 return property;
             }
 
-            return new ReferenceProperty { Ref = arrayRef };
+            var arrayItemReference = jObject["items"].ToObject<ReferenceProperty>();
+            return arrayItemReference;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -63,5 +66,22 @@ namespace Swagger2Pdf.Model.Converters
         public override bool CanWrite => true;
 
         public override bool CanRead => true;
+
+        protected virtual ReferenceProperty ResolveReferenceProperty(string reference, JToken jObject, JsonSerializer serializer)
+        {
+            return new ReferenceProperty
+            {
+                Ref = reference,
+                Description = jObject["description"]?.ToString()
+            };
+
+            //var refResolver = serializer.ReferenceResolver;
+            //if (!refResolver.IsReferenced(null, reference))
+            //{   
+            //    refResolver.AddReference(null, reference, new object());
+            //}
+            //
+            //return refResolver.ResolveReference(null, reference) as ReferenceProperty;
+        }
     }
 }
