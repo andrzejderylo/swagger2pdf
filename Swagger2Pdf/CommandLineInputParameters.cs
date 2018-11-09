@@ -13,7 +13,7 @@ namespace Swagger2Pdf
         public string OutputFileName { get; set; }
 
         [Option('f', "filter", Required = false, HelpText = "Prints only specified endpoints. Wildcard (*) supported.")]
-        public IEnumerable<string> IncludeOnlyEndpoints { get; set; }
+        public IEnumerable<string> EndpointFilters { get; set; }
 
         [Option('p', "picture", Required = false, HelpText = "First page company logo picture. Maximum recommended width is 600px")]
         public string WelcomePageImagePath { get; set; }
@@ -35,12 +35,12 @@ namespace Swagger2Pdf
                 yield return new Example("Normal scenario", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf"});
                 yield return new Example("Using local swagger.json file", new CommandLineInputParameters { InputFileName = "./swagger.json", OutputFileName = "./petstore.pdf"});
                 yield return new Example("Include company logo", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", WelcomePageImagePath = "./image.png"});
-                yield return new Example("Filtering endpoints", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", IncludeOnlyEndpoints = new List<string>
+                yield return new Example("Filtering endpoints", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", EndpointFilters = new List<string>
                 {
                     ":/pet",
                     "GET:/store/inventory"
                 }});
-                yield return new Example("Filtering endpoints with wildcard", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", IncludeOnlyEndpoints = new List<string>
+                yield return new Example("Filtering endpoints with wildcard", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", EndpointFilters = new List<string>
                 {
                     "GET:/pet*",
                     "/store/*",

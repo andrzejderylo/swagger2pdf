@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
 using Swagger2Pdf.Filters;
@@ -20,23 +19,13 @@ using Response = Swagger2Pdf.Model.Response;
 
 namespace Swagger2Pdf
 {
-    public class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
-#if !DEBUG
-            Perform(new CommandLineInputParameters
-            {
-                InputFileName = "https://petstore.swagger.io/v2/swagger.json",
-                OutputFileName = "./documentation.pdf",
-                WelcomePageImagePath = "./image.png",
-                Author = "Author Authorski"
-            });
-#else
             var commandLineArgsParser = new Parser(ConfigureCommandLineParser);
             commandLineArgsParser.ParseArguments<CommandLineInputParameters>(args)
                 .WithParsed(Perform);
-#endif
         }
 
         private static void ConfigureCommandLineParser(ParserSettings obj)
@@ -63,7 +52,7 @@ namespace Swagger2Pdf
             docModel.Version = parameters.Version ?? swaggerJsonInfo.Info.Version;
             docModel.Author = parameters.Author ?? "";
             docModel.DocumentDate = DateTime.Now;
-            docModel.DocumentationEntries = PrepareDocumentationEntries(parameters.IncludeOnlyEndpoints, swaggerJsonInfo);
+            docModel.DocumentationEntries = PrepareDocumentationEntries(parameters.EndpointFilters, swaggerJsonInfo);
             docModel.AuthorizationInfos = PrepareAuthorizationInfos(swaggerJsonInfo);
 
             return docModel;
@@ -74,13 +63,11 @@ namespace Swagger2Pdf
             return swaggerJsonInfo.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
         }
 
-        private static List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> includeOnlyEndpoints, SwaggerInfo swaggerJsonInfo)
-        {
-            var endpointsToInclude = includeOnlyEndpoints?.ToList() ?? new List<string>();
-            var filters = endpointsToInclude.Select(EndpointFilterFactory.CreateEndpointFilter).ToList();
-            
+        private static List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> endpointFilters, SwaggerInfo swaggerJsonInfo)
+        {   
+            var endpointFilter = endpointFilters?.Select(EndpointFilterFactory.CreateEndpointFilter).ToList() ?? new List<EndpointFilter>(); 
 
-            List<EndpointInfo> endpointInfos = swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
+            var swaggerPdfEndpointList = swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
                  new EndpointInfo
                  {
                      EndpointPath = path.Key,
@@ -98,13 +85,19 @@ namespace Swagger2Pdf
                      Responses = httpMethod.Value.Responses?.Select(BuildResponse).ToList(),
                  })).ToList();
 
-            var resultEndpoints = new List<EndpointInfo>();
-            foreach (var filter in filters)
+            if (!endpointFilter.Any())
             {
-                resultEndpoints.AddRange(endpointInfos.Where(x => filter.MatchEndpoint(x.HttpMethod, x.EndpointPath)));
+                return swaggerPdfEndpointList;
             }
 
-            return resultEndpoints;
+            var swaggerFilteredPdfEndpointList = new List<EndpointInfo>(swaggerPdfEndpointList.Capacity);
+            foreach (var f in endpointFilter)
+            {
+                swaggerFilteredPdfEndpointList.AddRange(swaggerPdfEndpointList.Where(e => f.MatchEndpoint(e.HttpMethod, e.EndpointPath)));
+            }
+
+            return swaggerFilteredPdfEndpointList;
+
         }
 
         private static SwaggerInfo ParseSwaggerJsonInfo(string jsonString)
