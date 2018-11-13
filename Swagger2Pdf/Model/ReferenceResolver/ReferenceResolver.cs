@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Swagger2Pdf.Model.Properties;
 
 namespace Swagger2Pdf.Model.ReferenceResolver
 {
@@ -23,6 +24,11 @@ namespace Swagger2Pdf.Model.ReferenceResolver
         private static string GetReferenceKey(string reference)
         {
             return reference.Split('/').Last();
+        }
+
+        public SchemaResolutionContext CreateResolutionContext()
+        {
+            return new SchemaResolutionContext(this);
         }
     }
 
