@@ -20,10 +20,10 @@ namespace Swagger2Pdf.Filters
                 var httpMethod = string.IsNullOrEmpty(splittedEndpointFilterString[0]) ? null : splittedEndpointFilterString[0].ToUpper();
                 var httpEndpoint = splittedEndpointFilterString[1];
 
-                return new EndpointFilter(httpMethod, httpEndpoint);
+                return new EndpointFilter(httpMethod, httpEndpoint, endpointFilterString);
             }
 
-            return new EndpointFilter(null, splittedEndpointFilterString[0]);
+            return new EndpointFilter(null, splittedEndpointFilterString[0], endpointFilterString);
         }
     }
 

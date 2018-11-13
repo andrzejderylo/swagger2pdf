@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Reflection;
+using log4net;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.Rendering;
@@ -10,6 +12,7 @@ namespace Swagger2Pdf.PdfGenerator
     public class SwaggerPdfDocumentBuilder
     {
         private readonly Document _document;
+        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
 
         public SwaggerPdfDocumentBuilder()
         {
@@ -18,14 +21,25 @@ namespace Swagger2Pdf.PdfGenerator
 
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
         {
+            Logger.Info("Building pdf document");
             _document.DefineStyles();
 
+            Logger.Info("Drawing welcome page");
             DrawWelcomePage(_document, swaggerDocumentModel);
+
+            Logger.Info("Drawing authorization info page");
             DrawAuthorizationInfoPage(_document, swaggerDocumentModel);
+
+            Logger.Info("Drawing drawing endpoint documentation");
             DrawEndpointDocumentation(_document, swaggerDocumentModel);
 
             var renderer = new PdfDocumentRenderer { Document = _document };
+
+            Logger.Info("Rendering PDF document");
             renderer.RenderDocument();
+
+            var fi = new FileInfo(swaggerDocumentModel.PdfDocumentPath);
+            Logger.Info($"Saving PDF document to: {fi.FullName}");
             renderer.PdfDocument.Save(swaggerDocumentModel.PdfDocumentPath);
         }
 

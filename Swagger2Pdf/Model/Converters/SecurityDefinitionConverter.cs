@@ -9,7 +9,7 @@ namespace Swagger2Pdf.Model.Converters
     {
         public override bool CanConvert(Type objectType)
         {
-            return typeof(SecurityDefinition) == objectType || objectType.BaseType == typeof(SecurityDefinition);
+            return typeof(SecurityDefinition) == objectType;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

@@ -35,6 +35,9 @@
     <Reference Include="CommandLine, Version=2.3.0.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.3.0\lib\net45\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MigraDoc.DocumentObjectModel, Version=1.32.4334.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp-MigraDoc-GDI.1.32.4334.0\lib\net20\MigraDoc.DocumentObjectModel.dll</HintPath>
     </Reference>
@@ -79,6 +82,7 @@
     <Compile Include="Model\Properties\ArrayProperty.cs" />
     <Compile Include="Model\Converters\PropertyBaseConverter.cs" />
     <Compile Include="Model\Definition.cs" />
+    <Compile Include="Model\Properties\EnumProperty.cs" />
     <Compile Include="Model\PropertyBase.cs" />
     <Compile Include="Model\Properties\ReferenceProperty.cs" />
     <Compile Include="Model\ReferenceResolver\ReferenceResolver.cs" />

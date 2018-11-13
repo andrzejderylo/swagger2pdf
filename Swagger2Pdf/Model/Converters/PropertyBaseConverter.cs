@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Swagger2Pdf.Model.Properties;
@@ -21,13 +22,12 @@ namespace Swagger2Pdf.Model.Converters
 
             if (!string.IsNullOrEmpty(@ref))
             {   
-                return ResolveReferenceProperty(@ref, jObject, serializer);
+                return ResolveReferenceProperty(jObject);
             }
             
             if (!string.IsNullOrEmpty(@enum))
             {
-                var enumProperty = jObject.ToObject<EnumProperty>();
-                return enumProperty;
+                return CreateEnumProperty(jObject);
             }
 
             if (!string.IsNullOrEmpty(type) && type == "array")
@@ -36,26 +36,51 @@ namespace Swagger2Pdf.Model.Converters
                 {
                     Description = jObject["description"]?.ToString(),
                     Type = "array",
-                    Items = CreateItemsProperty(jObject)
+                    Items = CreateItemsProperty(jObject["items"])
                 };
             }
 
-            return jObject.ToObject<Property>();
+            return CreateSimpleProperty(jObject);
+        }
+
+        private EnumProperty CreateEnumProperty(JToken jObject)
+        {
+            return new EnumProperty
+            {
+                Type = jObject["type"]?.ToString(),
+                Format = jObject["format"]?.ToString(),
+                ExampleValue = jObject["exampleValue"]?.ToObject<object>(),
+                CollectionFormat = jObject["collectionFormat"]?.ToString(),
+                Default = jObject["default"]?.ToObject<object>(),
+                Description = jObject["description"]?.ToString(),
+                EnumValues = jObject["enumValues"]?.ToObject<object[]>()
+            };
+        }
+
+        private Property CreateSimpleProperty(JToken jObject)
+        {
+            return new Property
+            {
+                Type = jObject["type"]?.ToString(),
+                Format = jObject["format"]?.ToString(),
+                Description = jObject["description"]?.ToString(),
+                ExampleValue = jObject["exampleValue"]?.ToObject<object>()
+            };
         }
 
         private PropertyBase CreateItemsProperty(JToken jObject)
         {
-            var arrayRef = jObject["items"]["$ref"]?.ToString();
-            if (arrayRef == null)
+            var arrayRef = jObject["$ref"]?.ToString();
+            var @enum = jObject["enum"]?.ToString();
+
+            if (arrayRef != null) return ResolveReferenceProperty(jObject);
+
+            if (@enum != null)
             {
-                var collectionFormat = jObject["collectionFormat"]?.ToString();
-                var property = jObject["items"].ToObject<Property>();
-                property.CollectionFormat = collectionFormat;
-                return property;
+                return CreateEnumProperty(jObject);
             }
 
-            var arrayItemReference = jObject["items"].ToObject<ReferenceProperty>();
-            return arrayItemReference;
+            return CreateSimpleProperty(jObject);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -67,21 +92,13 @@ namespace Swagger2Pdf.Model.Converters
 
         public override bool CanRead => true;
 
-        protected virtual ReferenceProperty ResolveReferenceProperty(string reference, JToken jObject, JsonSerializer serializer)
+        protected virtual ReferenceProperty ResolveReferenceProperty(JToken jObject)
         {
             return new ReferenceProperty
             {
-                Ref = reference,
+                Ref = jObject["$ref"]?.ToString(),
                 Description = jObject["description"]?.ToString()
             };
-
-            //var refResolver = serializer.ReferenceResolver;
-            //if (!refResolver.IsReferenced(null, reference))
-            //{   
-            //    refResolver.AddReference(null, reference, new object());
-            //}
-            //
-            //return refResolver.ResolveReference(null, reference) as ReferenceProperty;
         }
     }
 }

@@ -4,14 +4,16 @@ namespace Swagger2Pdf.Filters
 {
     public sealed class EndpointFilter
     {
-        public EndpointFilter(string httpMethod, string httpEndpoint)
+        public EndpointFilter(string httpMethod, string httpEndpoint, string endpointFilterString = "")
         {
+            EndpointFilterString = endpointFilterString;
             HttpMethod = httpMethod;
             HttpEndpoint = httpEndpoint;
             _httpEndpointParts = httpEndpoint.Split('*');
             _httpEndpointComparator = GetHttpEndpointComparator(httpEndpoint);
         }
 
+        public string EndpointFilterString { get; }
         public string HttpMethod { get; }
         public string HttpEndpoint { get; }
 

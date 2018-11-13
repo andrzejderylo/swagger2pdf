@@ -1,4 +1,5 @@
-﻿using Swagger2Pdf.PdfGenerator.Model;
+﻿using System;
+using Swagger2Pdf.PdfGenerator.Model;
 using Swagger2Pdf.PdfGenerator.Model.Schemas;
 
 namespace Swagger2Pdf.Model.Properties
@@ -10,11 +11,16 @@ namespace Swagger2Pdf.Model.Properties
         public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
         {
             var complexTypeSchema = new ComplexTypeSchema();
-            var definition = resolutionContext.ReferenceResolver.ResolveReference(null, Ref);
+            var definition = resolutionContext.ReferenceResolver.ResolveReference(Ref);
+
+            if (definition == null)
+            {
+                throw new ArgumentException($"Unable to resolve definition for reference code: {Ref}");
+            }
 
             foreach (var property in definition.Properties)
-            {   
-                complexTypeSchema.AddProperty(property.Key, property.Value.ResolveSchema(resolutionContext));
+            {
+                complexTypeSchema.AddProperty(property.Key, property.Value?.ResolveSchema(resolutionContext));
             }
 
             return complexTypeSchema;

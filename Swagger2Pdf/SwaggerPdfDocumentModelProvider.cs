@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using log4net;
 using Newtonsoft.Json;
 using Swagger2Pdf.Filters;
 using Swagger2Pdf.Model;
@@ -17,6 +19,7 @@ namespace Swagger2Pdf
     {
         private readonly SwaggerJsonProvider _swaggerJsonProvider;
         private ReferenceResolver _referenceResolver;
+        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
 
         public SwaggerPdfDocumentModelProvider()
         {
@@ -25,11 +28,12 @@ namespace Swagger2Pdf
 
         public SwaggerPdfDocumentModel PrepareSwaggerPdfModel(CommandLineInputParameters parameters)
         {
-            var docModel = new SwaggerPdfDocumentModel();
+            Logger.Info("Started preparing swagger pdf model");
             var swaggerJsonString = _swaggerJsonProvider.GetSwaggerJsonString(parameters.InputFileName);
+            var swaggerJsonInfo = GetSwaggerInfoFromJsonString(swaggerJsonString);
 
-            var swaggerJsonInfo = ParseSwaggerJsonInfo(swaggerJsonString);
-
+            Logger.Info("Preparing PDF model");
+            var docModel = new SwaggerPdfDocumentModel();
             docModel.PdfDocumentPath = parameters.OutputFileName;
             docModel.WelcomePageImage = parameters.WelcomePageImagePath;
             docModel.Title = parameters.Title ?? swaggerJsonInfo.Info.Title;
@@ -42,10 +46,12 @@ namespace Swagger2Pdf
             return docModel;
         }
 
-        private SwaggerInfo ParseSwaggerJsonInfo(string jsonString)
+        private SwaggerInfo GetSwaggerInfoFromJsonString(string jsonString)
         {
-            _referenceResolver = JsonConvert.DeserializeObject<ReferenceResolver>(jsonString);
+            Logger.Info("Retrieving reference resolver");
+            _referenceResolver = JsonConvert.DeserializeObject<ReferenceResolver>(jsonString, new PropertyBaseConverter());
 
+            Logger.Info("Retrieveing swagger.json information");
             JsonConvert.DefaultSettings = () =>
             {
                 var settings = new JsonSerializerSettings();
@@ -59,58 +65,69 @@ namespace Swagger2Pdf
                 return settings;
             };
 
+            
             var swaggerInfo = JsonConvert.DeserializeObject<SwaggerInfo>(jsonString);
             return swaggerInfo;
 
         }
 
-        private List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> endpointFilters, SwaggerInfo swaggerJsonInfo)
+        private List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> endpointFiltersStrings, SwaggerInfo swaggerJsonInfo)
         {
-            var endpointFilter = endpointFilters?.Select(EndpointFilterFactory.CreateEndpointFilter).ToList() ?? new List<EndpointFilter>();
+            Logger.Info("Preparing endpoint information");
+            var endpointFilters = endpointFiltersStrings?.Select(EndpointFilterFactory.CreateEndpointFilter).ToList() ?? new List<EndpointFilter>();
             var schemaResolutionContext = _referenceResolver.CreateResolutionContext();
 
-            var swaggerPdfEndpointList = swaggerJsonInfo.Paths.SelectMany(path => path.Value.Select(httpMethod =>
-                new EndpointInfo
-                {
-                    EndpointPath = path.Key,
-                    HttpMethod = httpMethod.Key.ToUpper(),
-                    Deprecated = httpMethod.Value.Deprecated,
-                    Summary = httpMethod.Value.Summary,
-                    UrlParameters = httpMethod.Value.Parameters?.Where(x => x.In == "query")
-                        .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
-                        .ToList(),
-                    BodyParameters = httpMethod.Value.Parameters?.Where(x => x.In == "body")
-                        .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
-                        .ToList(),
-                    FormDataParameters = httpMethod.Value.Parameters?.Where(x => x.In == "formData")
-                        .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
-                        .ToList(),
-                    PathParameters = httpMethod.Value.Parameters?.Where(x => x.In == "path")
-                        .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
-                        .ToList(),
-                    Responses = httpMethod.Value.Responses?
-                        .Select(response => BuildResponse(response, schemaResolutionContext))
-                        .ToList(),
-                })).ToList();
+            var swaggerPdfEndpointList = swaggerJsonInfo.Paths
+                .SelectMany(path => BuildEndpointEntry(path, schemaResolutionContext))
+                .ToList();
 
-            if (!endpointFilter.Any())
+            if (!endpointFilters.Any())
             {
+                Logger.Info($"No filters applied, endpoints obtained: {swaggerPdfEndpointList.Count}");
                 return swaggerPdfEndpointList;
             }
 
-            var swaggerFilteredPdfEndpointList = new List<EndpointInfo>(swaggerPdfEndpointList.Capacity);
-            foreach (var f in endpointFilter)
+            var filteredSwaggerPdfEndpointList = new List<EndpointInfo>(swaggerPdfEndpointList.Capacity);
+            foreach (var endpointFilter in endpointFilters)
             {
-                swaggerFilteredPdfEndpointList.AddRange(swaggerPdfEndpointList.Where(e => f.MatchEndpoint(e.HttpMethod, e.EndpointPath)));
+                Logger.Info($"Applying filter to endpoint documentation: {endpointFilter.EndpointFilterString}");
+                filteredSwaggerPdfEndpointList.AddRange(swaggerPdfEndpointList.Where(e => endpointFilter.MatchEndpoint(e.HttpMethod, e.EndpointPath)));
             }
 
-            return swaggerFilteredPdfEndpointList;
-
+            Logger.Info($"Got endpoints: {swaggerPdfEndpointList.Count}, after filtering {filteredSwaggerPdfEndpointList.Count} left");
+            return filteredSwaggerPdfEndpointList;
         }
-        
+
         private static Dictionary<string, AuthorizationInfo> PrepareAuthorizationInfos(SwaggerInfo swaggerJsonInfo)
         {
             return swaggerJsonInfo.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
+        }
+
+        private static IEnumerable<EndpointInfo> BuildEndpointEntry(KeyValuePair<string, Dictionary<string, Request>> path, SchemaResolutionContext schemaResolutionContext)
+        {
+            Logger.Info($"Processing endpoint: {path.Key}");
+            return path.Value.Select(httpMethod => new EndpointInfo
+            {
+                EndpointPath = path.Key,
+                HttpMethod = httpMethod.Key.ToUpper(),
+                Deprecated = httpMethod.Value.Deprecated,
+                Summary = httpMethod.Value.Summary,
+                UrlParameters = httpMethod.Value.Parameters?.Where(x => x.In == "query")
+                    .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
+                    .ToList(),
+                BodyParameters = httpMethod.Value.Parameters?.Where(x => x.In == "body")
+                    .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
+                    .ToList(),
+                FormDataParameters = httpMethod.Value.Parameters?.Where(x => x.In == "formData")
+                    .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
+                    .ToList(),
+                PathParameters = httpMethod.Value.Parameters?.Where(x => x.In == "path")
+                    .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
+                    .ToList(),
+                Responses = httpMethod.Value.Responses?
+                    .Select(response => BuildResponse(response, schemaResolutionContext))
+                    .ToList()
+            });
         }
 
         private static PdfGenerator.Model.Parameter BuildParameter(Parameter parameter, SchemaResolutionContext resolutionContext)

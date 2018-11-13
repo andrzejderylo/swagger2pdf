@@ -2,14 +2,19 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
+using log4net;
 
 namespace Swagger2Pdf
 {
     public class SwaggerJsonProvider
     {
+        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+
         public string GetSwaggerJsonString(string inputFileName)
         {
+            Logger.Info($"Getting swagger json file: {inputFileName}");
             if (inputFileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase))
             {
                 return GetRemoteSwaggerJsonString(new Uri(inputFileName));
@@ -20,6 +25,7 @@ namespace Swagger2Pdf
 
         private static string GetLocalSwaggerJson(string inputFileName)
         {
+            Logger.Info("Obtaining swagger.json from local file");
             var swaggerJsonFileInfo = new FileInfo(inputFileName);
             if (!swaggerJsonFileInfo.Exists)
             {
@@ -31,6 +37,7 @@ namespace Swagger2Pdf
 
         private static string GetRemoteSwaggerJsonString(Uri swaggerJsonUri)
         {
+            Logger.Info("Obtaining swagger.json from remote");
             using (HttpClient client = CreateHttpClient())
             {
                 var task = client.GetAsync(swaggerJsonUri);

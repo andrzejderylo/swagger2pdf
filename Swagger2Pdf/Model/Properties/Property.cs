@@ -16,8 +16,6 @@ namespace Swagger2Pdf.Model.Properties
         [JsonProperty("example")]
         public object ExampleValue { get; set; }
 
-        public string CollectionFormat { get; set; }
-
         public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
         {
             return new SimpleTypeSchema(Format, Type, GetExampleValue());
@@ -43,20 +41,6 @@ namespace Swagger2Pdf.Model.Properties
                 case "boolean": return true;
                 default: return null;
             }
-        }
-    }
-
-    public class EnumProperty : Property
-    {
-        [JsonProperty("default")]
-        public object Default { get; set; }
-        
-        [JsonProperty("enum")]
-        public object[] EnumValues { get; set; }
-
-        public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
-        {
-            return new EnumTypeSchema(Type, EnumValues, Default, CollectionFormat);
         }
     }
 }
