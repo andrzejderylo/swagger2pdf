@@ -55,7 +55,7 @@ namespace Swagger2Pdf.Tests
             // Assert
             endpointFilter.Should().BeEquivalentTo(new EndpointFilter("POST", "/api/Pets", "POST:/api/Pets"));
         }
-        
+
         [Test]
         public void EndpointFilterFactory_ShouldParse_ColonAndEndpoint()
         {
@@ -68,7 +68,7 @@ namespace Swagger2Pdf.Tests
             endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets", ":/api/Pets"));
         }
 
-        
+
         [Test]
         public void EndpointFilterFactory_ShouldParse_EndpointOnly()
         {
