@@ -53,7 +53,7 @@ namespace Swagger2Pdf.Tests
             var endpointFilter = EndpointFilterFactory.CreateEndpointFilter("POST:/api/Pets");
 
             // Assert
-            endpointFilter.Should().BeEquivalentTo(new EndpointFilter("POST", "/api/Pets"));
+            endpointFilter.Should().BeEquivalentTo(new EndpointFilter("POST", "/api/Pets", "POST:/api/Pets"));
         }
         
         [Test]
@@ -65,7 +65,7 @@ namespace Swagger2Pdf.Tests
             var endpointFilter = EndpointFilterFactory.CreateEndpointFilter(":/api/Pets");
 
             // Assert
-            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets"));
+            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets", ":/api/Pets"));
         }
 
         
@@ -78,7 +78,7 @@ namespace Swagger2Pdf.Tests
             var endpointFilter = EndpointFilterFactory.CreateEndpointFilter("/api/Pets");
 
             // Assert
-            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets"));
+            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets", "/api/Pets"));
         }
 
         [Test]
