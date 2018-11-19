@@ -4,6 +4,7 @@ using System.Reflection;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
+using iText.StyledXmlParser.Css.Page;
 using log4net;
 using Swagger2Pdf.PdfGenerator.Model;
 
@@ -12,42 +13,42 @@ namespace Swagger2Pdf.PdfGenerator
     public class SwaggerPdfDocumentBuilder
     {
         private readonly Document _document;
+        private PdfDocument _pdfDocument;
 
         private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
-        
 
         public SwaggerPdfDocumentBuilder(SwaggerPdfDocumentModel model)
         {
             var _documentWriter = new PdfWriter(model.PdfDocumentPath);
-            var _pdfDocument = new PdfDocument(_documentWriter);
+            _pdfDocument = new PdfDocument(_documentWriter);
             _document = new Document(_pdfDocument);
         }
 
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             Logger.Info("Building pdf document");
-            _document.DefineStyles();
 
             Logger.Info("Drawing welcome page");
             DrawWelcomePage(_document, swaggerDocumentModel);
+            Logger.Info("Drawing welcome page done.");
 
             Logger.Info("Drawing authorization info page");
             DrawAuthorizationInfoPage(_document, swaggerDocumentModel);
+            Logger.Info("Drawing authorization info page done.");
 
             Logger.Info("Drawing drawing endpoint documentation");
             DrawEndpointDocumentation(_document, swaggerDocumentModel);
 
             Logger.Info("Rendering PDF document");
-            
-
             var fi = new FileInfo(swaggerDocumentModel.PdfDocumentPath);
             Logger.Info($"Saving PDF document to: {fi.FullName}");
             _document.Close();
         }
 
-        private static void DrawWelcomePage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
-        {
-            pdfDocument.Add(new AreaBreak());
+        private static void DrawWelcomePage(PdfDocument pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        {   
+            var page = pdfDocument.AddNewPage();
+            page.GetDocument().
             var welcomeSection = pdfDocument.AddSection();
             if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
             {
