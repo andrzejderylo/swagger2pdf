@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 using log4net;
-using MigraDoc.DocumentObjectModel;
-using MigraDoc.DocumentObjectModel.Shapes;
-using MigraDoc.Rendering;
 using Swagger2Pdf.PdfGenerator.Model;
 
 namespace Swagger2Pdf.PdfGenerator
@@ -12,11 +12,15 @@ namespace Swagger2Pdf.PdfGenerator
     public class SwaggerPdfDocumentBuilder
     {
         private readonly Document _document;
-        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
 
-        public SwaggerPdfDocumentBuilder()
+        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+        
+
+        public SwaggerPdfDocumentBuilder(SwaggerPdfDocumentModel model)
         {
-            _document = new Document();
+            var _documentWriter = new PdfWriter(model.PdfDocumentPath);
+            var _pdfDocument = new PdfDocument(_documentWriter);
+            _document = new Document(_pdfDocument);
         }
 
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
@@ -33,18 +37,17 @@ namespace Swagger2Pdf.PdfGenerator
             Logger.Info("Drawing drawing endpoint documentation");
             DrawEndpointDocumentation(_document, swaggerDocumentModel);
 
-            var renderer = new PdfDocumentRenderer { Document = _document };
-
             Logger.Info("Rendering PDF document");
-            renderer.RenderDocument();
+            
 
             var fi = new FileInfo(swaggerDocumentModel.PdfDocumentPath);
             Logger.Info($"Saving PDF document to: {fi.FullName}");
-            renderer.PdfDocument.Save(swaggerDocumentModel.PdfDocumentPath);
+            _document.Close();
         }
 
         private static void DrawWelcomePage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
+            pdfDocument.Add(new AreaBreak());
             var welcomeSection = pdfDocument.AddSection();
             if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
             {

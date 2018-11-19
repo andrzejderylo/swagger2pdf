@@ -1,6 +1,10 @@
-﻿using MigraDoc.DocumentObjectModel;
-using MigraDoc.DocumentObjectModel.Tables;
-using Font = MigraDoc.DocumentObjectModel.Font;
+﻿using System.Collections.Specialized;
+using iText.Kernel.Colors;
+using iText.Kernel.Font;
+using iText.Layout;
+using iText.Layout.Borders;
+using iText.Layout.Element;
+using iText.Layout.Properties;
 
 namespace Swagger2Pdf.PdfGenerator
 {
@@ -8,17 +12,17 @@ namespace Swagger2Pdf.PdfGenerator
     {
         public static Cell VerticallyCenteredContent(this Cell cell)
         {   
-            cell.VerticalAlignment = VerticalAlignment.Center;
+            cell.SetVerticalAlignment(VerticalAlignment.MIDDLE);
             return cell;
         }
 
         public static Paragraph PullRight(this Paragraph paragraph)
         {
-            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            paragraph.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
             return paragraph;
         }
 
-        public static Paragraph AddPageBreakableParagraph(this Section cell)
+        public static Paragraph AddPageBreakableParagraph(this BitVector32.Section cell)
         {
             var paragraph = cell.AddParagraph();
             paragraph.AddBorders();
@@ -26,7 +30,7 @@ namespace Swagger2Pdf.PdfGenerator
             return paragraph;
         }
 
-        public static Paragraph AddPageBreakableParagraph(this Section cell, string paragraphText)
+        public static Paragraph AddPageBreakableParagraph(this BitVector32.Section cell, string paragraphText)
         {
             var paragraph = cell.AddParagraph(paragraphText);
             paragraph.AddBorders();
@@ -35,120 +39,75 @@ namespace Swagger2Pdf.PdfGenerator
         }
 
         public static Paragraph AddBorders(this Paragraph paragraph)
-        {   
-            paragraph.Format.Borders = new Borders
-            {
-                Color = Colors.Black
-            };
+        {
+            paragraph.AddStyle(BorderedStyle());
             return paragraph;
         }
 
         public static Paragraph AsFixedCharLength(this Paragraph paragraph)
         {
-            paragraph.Style = "FixedCharLengthStyle";
+            paragraph.SetFont(FixedCharLengthFont);
             return paragraph;
         }
 
         public static Paragraph AsHeader(this Paragraph paragraph)
         {
-            paragraph.Style = "Header";
+            paragraph.SetFont(NormalLengthFont);
+            paragraph.SetFontSize(13);
+            paragraph.SetBold();
             return paragraph;
         }
 
         public static Paragraph AsTitle(this Paragraph paragraph)
         {
-            paragraph.Style = "Title";
+            paragraph.SetFont(NormalLengthFont);
+            paragraph.SetFontSize(20);
+            paragraph.SetBold();
             return paragraph;
         }
 
         public static Paragraph Centered(this Paragraph paragraph)
         {
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.SetHorizontalAlignment(HorizontalAlignment.CENTER);
             return paragraph;
         }
 
         public static Paragraph AsSubHeader(this Paragraph paragraph)
         {
-            paragraph.Style = "SubHeader";
+            paragraph.SetFontSize(11);
             return paragraph;
         }
 
         public static Paragraph Bold(this Paragraph paragraph)
         {
-            paragraph.Format.Font.Bold = true;
+            paragraph.SetBold();
             return paragraph;
         }
 
-        public static Table AddBorderedTable(this Section section)
+        public static Table AddBorderedTable(this BitVector32.Section section, float[] columns)
         {
-            var table = section.AddTable();
-            table.Borders = new Borders { Color = Colors.Black };
+            var table = new Table(columns);
+            table.SetWidth(UnitValue.CreatePercentValue(100));
+            table.AddStyle(BorderedStyle());
             return table;
         }
 
         public static Style FixedCharLengthStyle()
         {
-            return new Style("FixedCharLengthStyle", "Normal")
-            {
-                Font = FixedCharLengthFont
-            };
-        }
-
-        public static Font FixedCharLengthFont => new Font("Courier New")
-        {
-            Size = Unit.FromPoint(9)
-        };
-
-        public static Style Header()
-        {
-            var style = new Style("Header", "Normal")
-            {
-                Font =
-                {
-                    Size = Unit.FromPoint(13),
-                    Bold = true
-                }
-            };
+            var style = new Style();
+            style.SetFont(FixedCharLengthFont);
+            style.SetFontSize(9);
             return style;
         }
 
-        public static Style SubHeader()
-        {
-            var style = new Style("SubHeader", "Normal")
-            {
-                Font =
-                {
-                    Size = Unit.FromPoint(11),
-                }
-            };
-            return style;
-        }
+        public static PdfFont FixedCharLengthFont => PdfFontFactory.CreateFont("Courier New");
+        public static PdfFont NormalLengthFont => PdfFontFactory.CreateFont("Times New Roman");
 
-        private static Style Title()
+        public static Style BorderedStyle()
         {
-            
-            var style = new Style("Title", "Normal")
-            {
-                Font =
-                {
-                    Size = Unit.FromPoint(20),
-                    Bold = true
-                }
-            };
-            return style;
-        }
-
-        public static void DefineStyles(this Document document)
-        {
-            if (document.Styles == null)
-            {
-                document.Styles = new Styles();
-            }
-
-            document.Styles.Add(FixedCharLengthStyle());
-            document.Styles.Add(SubHeader());
-            document.Styles.Add(Header());
-            document.Styles.Add(Title());
+            var border = new SolidBorder(ColorConstants.BLACK, 1);
+            var borderedStyle = new Style().SetBorder(border);
+            return borderedStyle;
         }
     }
 
