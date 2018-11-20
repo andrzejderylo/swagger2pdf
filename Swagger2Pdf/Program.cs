@@ -31,7 +31,7 @@ namespace Swagger2Pdf
                 Logger.Info("Start");
                 var swaggerPdfDocumentProvider = new SwaggerPdfDocumentModelProvider();
                 var swaggerPdfModel = swaggerPdfDocumentProvider.PrepareSwaggerPdfModel(parameters);
-                var swaggerPdfDocumentBuilder = new SwaggerPdfDocumentBuilder();
+                var swaggerPdfDocumentBuilder = new SwaggerPdfDocumentBuilder(swaggerPdfModel);
                 swaggerPdfDocumentBuilder.BuildPdf(swaggerPdfModel);
                 Logger.Info("Processing successful");
                 Environment.Exit(0);

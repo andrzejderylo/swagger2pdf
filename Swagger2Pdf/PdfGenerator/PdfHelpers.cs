@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Layout;
@@ -8,7 +9,7 @@ using iText.Layout.Properties;
 
 namespace Swagger2Pdf.PdfGenerator
 {
-    internal static class MigradocHelpers
+    internal static class PdfHelpers
     {
         public static Cell VerticallyCenteredContent(this Cell cell)
         {   
@@ -17,25 +18,46 @@ namespace Swagger2Pdf.PdfGenerator
         }
 
         public static Paragraph PullRight(this Paragraph paragraph)
-        {
+        {   
             paragraph.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
             return paragraph;
         }
 
-        public static Paragraph AddPageBreakableParagraph(this BitVector32.Section cell)
+        public static void AddParagraph(this Document document, Action<Paragraph> p = null)
         {
-            var paragraph = cell.AddParagraph();
-            paragraph.AddBorders();
-            paragraph.Format.KeepTogether = false;
-            return paragraph;
+            var paragraph = new Paragraph();
+            p?.Invoke(paragraph);
+            document.Add(paragraph);
+        }
+        
+        public static void AddParagraph(this Document document, string text, Action<Paragraph> p = null)
+        {
+            var paragraph = new Paragraph(text);
+            p?.Invoke(paragraph);
+            document.Add(paragraph);
         }
 
-        public static Paragraph AddPageBreakableParagraph(this BitVector32.Section cell, string paragraphText)
+        public static Paragraph AddLineBreak(this Paragraph paragraph)
+        {   
+            return paragraph.Add("\r\n");
+        }
+
+        public static void AddAreaBreak(this Document document)
         {
-            var paragraph = cell.AddParagraph(paragraphText);
-            paragraph.AddBorders();
-            paragraph.Format.KeepTogether = false;
-            return paragraph;
+            document.Add(new AreaBreak());
+        }
+
+        public static Image AddImage(this Document document, string imagePath)
+        {
+            var imgData = ImageDataFactory.Create(new Uri(imagePath));
+            var image = new Image(imgData);
+            document.Add(image);
+            return image;
+        }
+
+        public static void AddPageBreakableParagraph(this Document document, string text, Action<Paragraph> p = null)
+        {
+            document.AddParagraph(text, p);
         }
 
         public static Paragraph AddBorders(this Paragraph paragraph)
@@ -46,7 +68,7 @@ namespace Swagger2Pdf.PdfGenerator
 
         public static Paragraph AsFixedCharLength(this Paragraph paragraph)
         {
-            paragraph.SetFont(FixedCharLengthFont);
+            paragraph.AddStyle(FixedCharLengthStyle());
             return paragraph;
         }
 
@@ -84,7 +106,14 @@ namespace Swagger2Pdf.PdfGenerator
             return paragraph;
         }
 
-        public static Table AddBorderedTable(this BitVector32.Section section, float[] columns)
+        public static Text AddFormattedText(this Paragraph paragraph, Style style)
+        {
+            var text = new Text(string.Empty).AddStyle(style);
+            paragraph.Add(text);
+            return text;
+        }
+
+        public static Table CreateBorderedTable(float[] columns)
         {
             var table = new Table(columns);
             table.SetWidth(UnitValue.CreatePercentValue(100));
@@ -100,8 +129,8 @@ namespace Swagger2Pdf.PdfGenerator
             return style;
         }
 
-        public static PdfFont FixedCharLengthFont => PdfFontFactory.CreateFont("Courier New");
-        public static PdfFont NormalLengthFont => PdfFontFactory.CreateFont("Times New Roman");
+        public static PdfFont FixedCharLengthFont => PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.COURIER);
+        public static PdfFont NormalLengthFont => PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.TIMES_ROMAN);
 
         public static Style BorderedStyle()
         {
@@ -110,5 +139,16 @@ namespace Swagger2Pdf.PdfGenerator
             return borderedStyle;
         }
     }
+
+    public static class CellHelpers
+    {
+        public static Cell AddParagraph(this Cell cell, string text)
+        {
+            var p = new Paragraph(text);
+            cell.Add(p);
+            return cell;
+        }
+    }
+
 
 }

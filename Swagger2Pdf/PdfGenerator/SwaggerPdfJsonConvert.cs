@@ -34,8 +34,8 @@ namespace Swagger2Pdf.PdfGenerator
             {
                 using (JsonTextWriter jw = new JsonTextWriter(sw))
                 {
-                    jw.Indentation = 1;
-                    jw.IndentChar = '\t';
+                    jw.Indentation = 2;
+                    jw.IndentChar = '\u00A0';
                     jw.Formatting = Formatting.Indented;
                     JsonSerializer serializer = JsonSerializer.Create(SerializerSettingsFactory());
                     serializer.Serialize(jw, obj);

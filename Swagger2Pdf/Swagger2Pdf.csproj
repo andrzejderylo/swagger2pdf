@@ -116,7 +116,7 @@
     <Compile Include="Model\Request.cs" />
     <Compile Include="Model\Properties\Property.cs" />
     <Compile Include="Model\Response.cs" />
-    <Compile Include="PdfGenerator\MigradocHelpers.cs" />
+    <Compile Include="PdfGenerator\PdfHelpers.cs" />
     <Compile Include="PdfGenerator\Model\AuthorizationInfo.cs" />
     <Compile Include="PdfGenerator\Model\EndpointInfo.cs" />
     <Compile Include="PdfGenerator\Model\AuthorizationInformation\OAuthAuthorizationInfo.cs" />

@@ -177,7 +177,7 @@ namespace Swagger2Pdf.Tests
                 new Endpoint("POST", "/pet/{petId}"),
                 new Endpoint("DELETE", "/pet/{petId}"),
                 new Endpoint("POST", "/pet/{petId}/uploadImage"),
-                new Endpoint("GET", "/store/inventory"),
+                new Endpoint("GET", "/store/inventory"), 
                 new Endpoint("POST", "/store/order"),
                 new Endpoint("GET", "/store/order/{orderId}"),
                 new Endpoint("DELETE", "/store/order/{orderId}"),

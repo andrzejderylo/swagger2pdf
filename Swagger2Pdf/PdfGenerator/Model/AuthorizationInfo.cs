@@ -1,5 +1,4 @@
-﻿using System.Data;
-using MigraDoc.DocumentObjectModel;
+﻿using iText.Layout.Element;
 
 namespace Swagger2Pdf.PdfGenerator.Model
 {

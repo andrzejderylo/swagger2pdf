@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
-using iText.StyledXmlParser.Css.Page;
+using iText.Layout.Properties;
 using log4net;
 using Swagger2Pdf.PdfGenerator.Model;
 
@@ -13,15 +14,13 @@ namespace Swagger2Pdf.PdfGenerator
     public class SwaggerPdfDocumentBuilder
     {
         private readonly Document _document;
-        private PdfDocument _pdfDocument;
 
         private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
 
         public SwaggerPdfDocumentBuilder(SwaggerPdfDocumentModel model)
         {
-            var _documentWriter = new PdfWriter(model.PdfDocumentPath);
-            _pdfDocument = new PdfDocument(_documentWriter);
-            _document = new Document(_pdfDocument);
+            var pdfDocument = new PdfDocument(new PdfWriter(model.PdfDocumentPath));
+            _document = new Document(pdfDocument);
         }
 
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
@@ -38,208 +37,219 @@ namespace Swagger2Pdf.PdfGenerator
 
             Logger.Info("Drawing drawing endpoint documentation");
             DrawEndpointDocumentation(_document, swaggerDocumentModel);
+            Logger.Info("Drawing drawing endpoint documentation done.");
 
             Logger.Info("Rendering PDF document");
             var fi = new FileInfo(swaggerDocumentModel.PdfDocumentPath);
             Logger.Info($"Saving PDF document to: {fi.FullName}");
+            Logger.Info("Done");
             _document.Close();
         }
 
-        private static void DrawWelcomePage(PdfDocument pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawWelcomePage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
         {   
-            var page = pdfDocument.AddNewPage();
-            page.GetDocument().
-            var welcomeSection = pdfDocument.AddSection();
             if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
             {
                 var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
                 if (imageFile.Exists)
-                {
-                    var image = welcomeSection.AddImage(imageFile.FullName);
-                    image.Left = ShapePosition.Center;
+                {   
+                    var image = document.AddImage(imageFile.FullName);
+                    image.SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
             }
 
-            welcomeSection.AddParagraph(swaggerDocumentModel.Title).AsTitle().Centered();
-            welcomeSection.AddParagraph(swaggerDocumentModel.Author).AsHeader().Centered();
-            welcomeSection.AddParagraph(swaggerDocumentModel.Version).Centered();
-            welcomeSection.AddParagraph(swaggerDocumentModel.DocumentDate.ToShortDateString()).Centered();
-            welcomeSection.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
+            document.AddParagraph(swaggerDocumentModel.Title, p => p.AsTitle().Centered());
+            document.AddParagraph(swaggerDocumentModel.Author, p => p.AsHeader().Centered());
+            document.AddParagraph(swaggerDocumentModel.Version, p => p.Centered());
+            document.AddParagraph(swaggerDocumentModel.DocumentDate.ToShortDateString(), p => p.Centered());
+            //document.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
         }
 
-        private static void DrawAuthorizationInfoPage(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawAuthorizationInfoPage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
-            var authorizationSection = pdfDocument.AddSection();
-            authorizationSection.AddParagraph("Authorization information").AsHeader();
-            authorizationSection.AddParagraph();
+            document.AddAreaBreak();
+            document.AddParagraph("Authorization information", p => p.AsHeader());
+            document.AddParagraph();
             foreach (var authorizationInfo in swaggerDocumentModel.AuthorizationInfos)
             {
-                authorizationSection.AddParagraph($"Authorization option: {authorizationInfo.Key}").AsSubHeader().Bold();
-                authorizationSection.AddParagraph();
-                authorizationInfo.Value.WriteAuthorizationInfo(authorizationSection.AddParagraph());
-                authorizationSection.AddParagraph();
+                document.AddParagraph($"Authorization option: {authorizationInfo.Key}", p => p.AsSubHeader().Bold());
+                document.AddParagraph();
+                document.AddParagraph(p => authorizationInfo.Value.WriteAuthorizationInfo(p));
+                document.AddParagraph();
             }
         }
 
-        private static void DrawEndpointDocumentation(Document pdfDocument, SwaggerPdfDocumentModel swaggerDocumentModel)
+        private static void DrawEndpointDocumentation(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             foreach (var docEntry in swaggerDocumentModel.DocumentationEntries)
             {
-                var pathSection = pdfDocument.AddSection();
+                document.AddAreaBreak();
 
-                DrawEndpointHeader(docEntry, pathSection);
-                DrawPathParameters(docEntry, pathSection);
-                DrawUrlParameters(docEntry, pathSection);
-                DrawFormDataParameters(docEntry, pathSection);
-                DrawBodyParameters(docEntry, pathSection);
-                DrawResponses(docEntry, pathSection);
-                pathSection.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
+                DrawEndpointHeader(docEntry, document);
+                DrawPathParameters(docEntry, document);
+                DrawUrlParameters(docEntry, document);
+                DrawFormDataParameters(docEntry, document);
+                DrawBodyParameters(docEntry, document);
+                DrawResponses(docEntry, document);
+                //document.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
             }
         }
 
-        private static void DrawPathParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawPathParameters(EndpointInfo docEntry, Document document)
         {
             if (docEntry.PathParameters != null && docEntry.PathParameters.Any())
             {
-                pathSection.AddParagraph();
-                pathSection.AddParagraph("Path parameters").AsSubHeader();
-                var table = pathSection.AddBorderedTable();
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-
-                var row = table.AddRow();
-                row[0].AddParagraph("Name");
-                row[1].AddParagraph("Type");
-                row[2].AddParagraph("Schema");
-                row[3].AddParagraph("Description");
+                document.AddParagraph();
+                document.AddParagraph("Path parameters", p => p.AsSubHeader());
+                var table = PdfHelpers.CreateBorderedTable(new float[] {25, 25, 25, 25});
+                
+                table.AddHeaderCell("Name");
+                table.AddHeaderCell("Type");
+                table.AddHeaderCell("Schema");
+                table.AddHeaderCell("Description");
 
                 foreach (var pathParameter in docEntry.PathParameters)
                 {
-                    row = table.AddRow();
-                    row[0].VerticallyCenteredContent().AddParagraph(pathParameter.Name ?? "");
-                    row[1].VerticallyCenteredContent().AddParagraph(pathParameter.Type ?? "");
+                    table = table.StartNewRow();
+                    table.AddCell(new Cell().VerticallyCenteredContent().AddParagraph(pathParameter.Name ?? ""));
+                    table.AddCell(new Cell().VerticallyCenteredContent().AddParagraph(pathParameter.Type ?? ""));
                     var schema = SwaggerPdfJsonConvert.SerializeObject(pathParameter.Schema);
                     if (schema != "null")
                     {
-                        row[2].VerticallyCenteredContent().AddParagraph(schema).AsFixedCharLength();
+                        var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
+                        table.AddCell(new Cell().VerticallyCenteredContent().Add(schemaParagraph));
                     }
 
-                    var description = row[3].VerticallyCenteredContent().AddParagraph(pathParameter.Description ?? "");
+                    var description = new Paragraph(pathParameter.Description ?? "");
                     pathParameter.Schema?.WriteDetailedDescription(description);
+                    table.AddCell(new Cell().VerticallyCenteredContent().Add(description));
                 }
+
+                document.Add(table);
             }
         }
 
-        private static void DrawResponses(EndpointInfo docEntry, Section pathSection)
+        private static void DrawResponses(EndpointInfo docEntry, Document document)
         {
             if (docEntry.Responses != null)
             {
-                pathSection.AddParagraph();
-                pathSection.AddParagraph("Responses").AsSubHeader();
+                document.AddParagraph();
+                document.AddParagraph("Responses", p => p.AsSubHeader());
 
                 foreach (var response in docEntry.Responses)
                 {
-                    pathSection.AddPageBreakableParagraph($"{response.Code}: {response.Description}").AddBorders();
+                    document.AddPageBreakableParagraph($"{response.Code}: {response.Description}", p => p.AddBorders());
                     var responseBody = SwaggerPdfJsonConvert.SerializeObject(response.Schema);
                     if (responseBody != "null")
                     {
-                        pathSection.AddPageBreakableParagraph(responseBody).AddBorders().AsFixedCharLength();
+                        document.AddPageBreakableParagraph(responseBody, p => p.AddBorders().AsFixedCharLength());
                     }
 
-                    pathSection.AddParagraph();
+                    document.AddParagraph();
                 }
             }
         }
 
-        private static void DrawEndpointHeader(EndpointInfo docEntry, Section pathSection)
+        private static void DrawEndpointHeader(EndpointInfo docEntry, Document document)
         {
-            var headerParagraph = pathSection.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}").AsHeader();
-            var summaryParagraph = pathSection.AddParagraph(docEntry.Summary);
+            var deprecatedStyle = new Style();
+            deprecatedStyle.SetFontColor(ColorConstants.RED);
+            deprecatedStyle.SetBold();
+            
+
+            document.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}", p =>
+            {
+                p.AsHeader();
+                if (docEntry.Deprecated)
+                {
+                    p.AddStyle(deprecatedStyle);
+                }
+            });
+            document.AddParagraph(docEntry.Summary, p =>
+            {
+                if (docEntry.Deprecated)
+                {
+                    p.AddStyle(deprecatedStyle);
+                }
+            });
             if (docEntry.Deprecated)
             {
-                var deprecatedParagraph = pathSection.AddParagraph("Deprecated");
-                deprecatedParagraph.Format.Font.Bold = true;
-                deprecatedParagraph.Format.Font.Color = Colors.Red;
-                headerParagraph.Format.Font.Color = Colors.Red;
-                summaryParagraph.Format.Font.Color = Colors.Red;
+                document.AddParagraph("Deprecated", p => p.AddStyle(deprecatedStyle));
             }
         }
 
-        private static void DrawBodyParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawBodyParameters(EndpointInfo docEntry, Document document)
         {
             if (docEntry.BodyParameters != null && docEntry.BodyParameters.Any())
             {
-                pathSection.AddParagraph();
-                pathSection.AddParagraph("Request body").AsSubHeader();
+                document.AddParagraph();
+                document.AddParagraph("Request body", p => p.AsSubHeader());
 
                 foreach (var bodyParameter in docEntry.BodyParameters)
-                {
-                    pathSection.AddPageBreakableParagraph(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema)).AsFixedCharLength();
+                {   
+                    document.AddPageBreakableParagraph(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema), p => p.AsFixedCharLength().AddBorders());
                 }
             }
         }
 
-        private static void DrawFormDataParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawFormDataParameters(EndpointInfo docEntry, Document document)
         {
             if (docEntry.FormDataParameters != null && docEntry.FormDataParameters.Any())
             {
-                pathSection.AddParagraph();
-                pathSection.AddParagraph("Form data parameters").AsSubHeader();
-                var table = pathSection.AddBorderedTable();
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-
-                var row = table.AddRow();
-                row[0].AddParagraph("Parameter name");
-                row[1].AddParagraph("Type");
-                row[2].AddParagraph("Description");
+                document.AddParagraph();
+                document.AddParagraph("Form data parameters", p => p.AsSubHeader());
+                var table = PdfHelpers.CreateBorderedTable(new float[] {33, 33, 33});
+                
+                table.AddHeaderCell("Parameter name");
+                table.AddHeaderCell("Type");
+                table.AddHeaderCell("Description");
 
                 foreach (var parameter in docEntry.FormDataParameters)
                 {
-                    row = table.AddRow();
-                    row[0].VerticallyCenteredContent().AddParagraph(parameter.Name ?? "");
-                    row[1].VerticallyCenteredContent().AddParagraph(parameter.Type ?? "");
-                    var description = row[2].VerticallyCenteredContent().AddParagraph(parameter.Description ?? "");
+                    table = table.StartNewRow();
+                    table.AddCell(parameter.Name ?? "");
+                    table.AddCell(parameter.Type ?? "");
+
+                    var description = new Paragraph(parameter.Description ?? "");
                     parameter.Schema?.WriteDetailedDescription(description);
+                    table.AddCell(description);
                 }
+
+                document.Add(table);
             }
         }
 
-        private static void DrawUrlParameters(EndpointInfo docEntry, Section pathSection)
+        private static void DrawUrlParameters(EndpointInfo docEntry, Document document)
         {
             if (docEntry.UrlParameters != null && docEntry.UrlParameters.Any())
             {
-                pathSection.AddParagraph();
-                pathSection.AddParagraph("Query string parameters").AsSubHeader();
-                var table = pathSection.AddBorderedTable();
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-                table.AddColumn(Unit.FromCentimeter(4));
-
-                var row = table.AddRow();
-                row[0].AddParagraph("Name");
-                row[1].AddParagraph("Type");
-                row[2].AddParagraph("Schema");
-                row[3].AddParagraph("Description");
+                document.AddParagraph();
+                document.AddParagraph("Query string parameters", p => p.AsSubHeader());
+                var table = PdfHelpers.CreateBorderedTable(new float[] {25, 25, 25, 25});
+                table.AddHeaderCell("Name");
+                table.AddHeaderCell("Type");
+                table.AddHeaderCell("Schema");
+                table.AddHeaderCell("Description");
 
                 foreach (var queryParameter in docEntry.UrlParameters)
                 {
-                    row = table.AddRow();
-                    row[0].VerticallyCenteredContent().AddParagraph(queryParameter.Name ?? "");
-                    row[1].VerticallyCenteredContent().AddParagraph(queryParameter.Type);
+                    table = table.StartNewRow();
+                    table.AddCell(queryParameter.Name ?? "");
+                    table.AddCell(queryParameter.Type ?? "");
                     var schema = SwaggerPdfJsonConvert.SerializeObject(queryParameter.Schema);
                     if (schema != "null")
                     {
-                        row[2].VerticallyCenteredContent().AddParagraph(schema).AsFixedCharLength();
+                        var paragraph = new Paragraph(schema);
+                        paragraph.AddStyle(PdfHelpers.FixedCharLengthStyle());
+                        table.AddCell(paragraph);
                     }
 
-                    var description = row[3].VerticallyCenteredContent().AddParagraph(queryParameter.Description ?? "");
+                    var description = new Paragraph(queryParameter.Description ?? "");
                     queryParameter.Schema?.WriteDetailedDescription(description);
+                    table.AddCell(description);
                 }
+
+                document.Add(table);
             }
         }
     }

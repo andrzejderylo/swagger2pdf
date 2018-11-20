@@ -1,5 +1,4 @@
-﻿using System;
-using MigraDoc.DocumentObjectModel;
+﻿using iText.Layout.Element;
 
 namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
 {
@@ -10,11 +9,11 @@ namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
 
         public override void WriteAuthorizationInfo(Paragraph paragraph)
         {
-            paragraph.AddText($"Authorization type: {Type}");
+            paragraph.Add($"Authorization type: {Type}");
             paragraph.AddLineBreak();
-            paragraph.AddText($"Authorization parameter name: {Name}");
+            paragraph.Add($"Authorization parameter name: {Name}");
             paragraph.AddLineBreak();
-            paragraph.AddText($"Authorization parameter request location: {In}");
+            paragraph.Add($"Authorization parameter request location: {In}");
         }
     }
 }

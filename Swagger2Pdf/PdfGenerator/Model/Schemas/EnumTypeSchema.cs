@@ -1,4 +1,4 @@
-﻿using MigraDoc.DocumentObjectModel;
+﻿using iText.Layout.Element;
 
 namespace Swagger2Pdf.PdfGenerator.Model.Schemas
 {
@@ -20,22 +20,22 @@ namespace Swagger2Pdf.PdfGenerator.Model.Schemas
         public override void WriteDetailedDescription(Paragraph paragraph)
         {
             if (CollectionFormat == "multi")
-            {
-                paragraph.AddText("Multiple values allowed");
+            {   
+                paragraph.Add("Multiple values allowed");
                 paragraph.AddLineBreak();
             }
 
             if (DefaultValue != null)
             {
-                paragraph.AddText("Defrault value: ");
-                var txt = paragraph.AddFormattedText(MigradocHelpers.FixedCharLengthFont);
-                txt.AddText(SwaggerPdfJsonConvert.SerializeObject(DefaultValue));
+                paragraph.Add("Default value: ");
+                var txt = paragraph.AddFormattedText(PdfHelpers.FixedCharLengthStyle());
+                txt.SetText(SwaggerPdfJsonConvert.SerializeObject(DefaultValue));
                 paragraph.AddLineBreak();
             }
 
-            paragraph.AddText("Allowed values:");
-            var formattedText = paragraph.AddFormattedText(SwaggerPdfJsonConvert.SerializeObject(EnumValues));
-            formattedText.Font = MigradocHelpers.FixedCharLengthFont;
+            paragraph.Add("Allowed values:");
+            var formattedText = paragraph.AddFormattedText(PdfHelpers.FixedCharLengthStyle());
+            formattedText.SetText(SwaggerPdfJsonConvert.SerializeObject(EnumValues));
         }
     }
 }

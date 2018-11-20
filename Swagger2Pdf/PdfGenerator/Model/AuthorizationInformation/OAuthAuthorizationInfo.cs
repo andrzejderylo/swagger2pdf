@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using MigraDoc.DocumentObjectModel;
+﻿using iText.Layout.Element;
+using System.Collections.Generic;
+using iText.Layout.Properties;
 
 namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
 {
@@ -11,24 +12,25 @@ namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
 
         public override void WriteAuthorizationInfo(Paragraph paragraph)
         {
-            paragraph.AddText($"Authorization type: {Type}");
+            paragraph.Add($"Authorization type: {Type}");
             paragraph.AddLineBreak();
-            paragraph.AddText($"Authorization url: {AuthorizationUrl}");
+            paragraph.Add($"Authorization url: {AuthorizationUrl}");
             paragraph.AddLineBreak();
-            paragraph.AddText($"Authorization flow: {Flow}");
+            paragraph.Add($"Authorization flow: {Flow}");
             paragraph.AddLineBreak();
-            var scopesTable = paragraph.Section.AddBorderedTable();
-            scopesTable.AddColumn(Unit.FromCentimeter(6));
-            scopesTable.AddColumn(Unit.FromCentimeter(6));
-            var row = scopesTable.AddRow();
-            row[0].AddParagraph("Scope key");
-            row[1].AddParagraph("Description");
+            var scopesTable = new Table(new float[] {50, 50}).AddStyle(PdfHelpers.BorderedStyle());
+            scopesTable.SetWidth(UnitValue.CreatePercentValue(100));
+            
+            scopesTable.AddCell("Scope key");
+            scopesTable.AddCell("Description");
             foreach (var scope in Scopes)
             {
-                row = scopesTable.AddRow();
-                row[0].AddParagraph(scope.Key ?? "");
-                row[1].AddParagraph(scope.Value ?? "");
+                scopesTable = scopesTable.StartNewRow();
+                scopesTable.AddCell(scope.Key ?? "");
+                scopesTable.AddCell(scope.Value ?? "");
             }
+
+            paragraph.Add(scopesTable);
         }
     }
 }
