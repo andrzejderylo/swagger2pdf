@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -15,7 +14,6 @@ namespace Swagger2Pdf.Tests
         [TestCase("GET:/api/pet/{petId}")]
         [TestCase("PUT:/api/pet/{petId}/{petStatus}")]
         [TestCase("PUT:/pet")]
-        [TestCase(":/pet")]
         [TestCase("/pet")]
         [TestCase("/pet*")]
         [TestCase("/p*t")]
@@ -34,6 +32,7 @@ namespace Swagger2Pdf.Tests
         [TestCase(":api/")]
         [TestCase(":/api:")]
         [TestCase("api")]
+        [TestCase(":/pet")]
         [TestCase("post:/api/pets")]
         public void EndpointFilterFactory_ShouldThrowException_DueToInvalidFilterFormat(string endpointFilterString)
         {
@@ -55,19 +54,6 @@ namespace Swagger2Pdf.Tests
             // Assert
             endpointFilter.Should().BeEquivalentTo(new EndpointFilter("POST", "/api/Pets", "POST:/api/Pets"));
         }
-
-        [Test]
-        public void EndpointFilterFactory_ShouldParse_ColonAndEndpoint()
-        {
-            // Arrange
-
-            // Act
-            var endpointFilter = EndpointFilterFactory.CreateEndpointFilter(":/api/Pets");
-
-            // Assert
-            endpointFilter.Should().BeEquivalentTo(new EndpointFilter(null, "/api/Pets", ":/api/Pets"));
-        }
-
 
         [Test]
         public void EndpointFilterFactory_ShouldParse_EndpointOnly()

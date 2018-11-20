@@ -10,7 +10,7 @@ namespace Swagger2Pdf
 {
     public class SwaggerJsonProvider
     {
-        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
 
         public string GetSwaggerJsonString(string inputFileName)
         {

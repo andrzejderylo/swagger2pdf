@@ -9,7 +9,7 @@ namespace Swagger2Pdf.Filters
 
         public static EndpointFilter CreateEndpointFilter(string endpointFilterString)
         {   
-            if (!EndpointFilterRegex.IsMatch(endpointFilterString))
+            if (!EndpointFilterRegex.IsMatch(endpointFilterString) || endpointFilterString.StartsWith(":"))
             {
                 throw new ArgumentException($"Invalid format of endpoint filter. Must be POST:/api/Pet or :/api/Pet or /api/Pet. Current format: {endpointFilterString}");
             }

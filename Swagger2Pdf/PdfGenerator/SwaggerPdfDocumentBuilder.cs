@@ -15,7 +15,7 @@ namespace Swagger2Pdf.PdfGenerator
     {
         private readonly Document _document;
 
-        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+        public static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
 
         public SwaggerPdfDocumentBuilder(SwaggerPdfDocumentModel model)
         {

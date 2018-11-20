@@ -9,14 +9,20 @@ namespace Swagger2Pdf
 {
     public static class Program
     {
-        public static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+        public static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var cfg = BasicConfigurator.Configure();
+            ConfigureLogger();
             var commandLineArgsParser = new Parser(ConfigureCommandLineParser);
             commandLineArgsParser.ParseArguments<CommandLineInputParameters>(args)
                 .WithParsed(Perform);
+        }
+
+        private static void ConfigureLogger()
+        {
+            var loggerRepository = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            BasicConfigurator.Configure(loggerRepository);
         }
 
         private static void ConfigureCommandLineParser(ParserSettings obj)

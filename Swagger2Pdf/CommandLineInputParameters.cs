@@ -37,7 +37,7 @@ namespace Swagger2Pdf
                 yield return new Example("Include company logo", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", WelcomePageImagePath = "./image.png"});
                 yield return new Example("Filtering endpoints", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", EndpointFilters = new List<string>
                 {
-                    ":/pet",
+                    "/pet",
                     "GET:/store/inventory"
                 }});
                 yield return new Example("Filtering endpoints with wildcard", new CommandLineInputParameters { InputFileName = "https://petstore.swagger.io/v2/swagger.json", OutputFileName = "./petstore.pdf", EndpointFilters = new List<string>

@@ -14,14 +14,11 @@ I would like to say thank you to:
 - Authors & contributors of [MigraDoc](https://github.com/empira/MigraDoc) for that amazingly easy to use pdf library
 - Authors & contruibutors of [CommandLineParser](https://github.com/commandlineparser/commandline) for awesome piece of code for parsing command line parameters like a boss. 
 
-# Notes
-Due to utilized pdf generation library, tool can only be used under Windows. Will try to investigate subhject to port whole thing to .netcore so it could also be used under linux. Sorry for inconvenience.
-
 # Endpoints markup
 I had to separate somehow HTTP verb from path (but could not use space) so tool has some special small markup designed only for this purpose. Verb is separated from path by ':' (colon). 
 For filtering sake, following combinations are allowed: 
 - `GET:/pet` - only endpoint with that specific verb and path is taken under consideration
-- `:/pet` or `/pet` - all enpoints matching this path regardless verb are taken under consideration
+- `/pet` - all endpoints matching this path regardless verb are taken under consideration
 - `POST:/*` - all endpoints matching this verb regardless path are taken under consideration
 - `POST:/p*t` - all endpoints with verb POST and path starting with 'p' and ending with 't' are taken under consideration. Wildcards are supported only at path section of URL address.
 

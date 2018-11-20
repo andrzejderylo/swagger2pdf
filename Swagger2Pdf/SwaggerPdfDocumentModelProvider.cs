@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 using Swagger2Pdf.Filters;
@@ -19,7 +18,7 @@ namespace Swagger2Pdf
     {
         private readonly SwaggerJsonProvider _swaggerJsonProvider;
         private ReferenceResolver _referenceResolver;
-        private static readonly ILog Logger = LogManager.GetLogger(Assembly.GetEntryAssembly().GetName().Name);
+        public static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
 
         public SwaggerPdfDocumentModelProvider()
         {
