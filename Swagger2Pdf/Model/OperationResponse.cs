@@ -2,7 +2,7 @@
 
 namespace Swagger2Pdf.Model
 {
-    public class Response
+    public class OperationResponse
     {
         [JsonProperty("description")]
         public string Description { get; set; }

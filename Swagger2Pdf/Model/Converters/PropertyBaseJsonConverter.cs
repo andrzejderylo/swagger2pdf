@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Swagger2Pdf.Model.Properties;
 
 namespace Swagger2Pdf.Model.Converters
 {
-    public class PropertyBaseConverter : JsonConverter
+    public class PropertyBaseJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -43,9 +42,9 @@ namespace Swagger2Pdf.Model.Converters
             return CreateSimpleProperty(jObject);
         }
 
-        private EnumProperty CreateEnumProperty(JToken jObject)
+        private EnumSimpleTypeProperty CreateEnumProperty(JToken jObject)
         {
-            return new EnumProperty
+            return new EnumSimpleTypeProperty
             {
                 Type = jObject["type"]?.ToString(),
                 Format = jObject["format"]?.ToString(),
@@ -57,9 +56,9 @@ namespace Swagger2Pdf.Model.Converters
             };
         }
 
-        private Property CreateSimpleProperty(JToken jObject)
+        private SimpleTypeProperty CreateSimpleProperty(JToken jObject)
         {
-            return new Property
+            return new SimpleTypeProperty
             {
                 Type = jObject["type"]?.ToString(),
                 Format = jObject["format"]?.ToString(),

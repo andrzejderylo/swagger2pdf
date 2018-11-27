@@ -4,7 +4,7 @@ using Swagger2Pdf.PdfGenerator.Model.Schemas;
 
 namespace Swagger2Pdf.Model.Properties
 {
-    public class EnumProperty : Property
+    public class EnumSimpleTypeProperty : SimpleTypeProperty
     {
         [JsonProperty("default")]
         public object Default { get; set; }

@@ -9,8 +9,6 @@ using Swagger2Pdf.Model.Converters;
 using Swagger2Pdf.Model.Properties;
 using Swagger2Pdf.Model.ReferenceResolver;
 using Swagger2Pdf.PdfGenerator.Model;
-using Parameter = Swagger2Pdf.Model.Parameter;
-using Response = Swagger2Pdf.Model.Response;
 
 namespace Swagger2Pdf
 {
@@ -35,8 +33,8 @@ namespace Swagger2Pdf
             var docModel = new SwaggerPdfDocumentModel();
             docModel.PdfDocumentPath = parameters.OutputFileName;
             docModel.WelcomePageImage = parameters.WelcomePageImagePath;
-            docModel.Title = parameters.Title ?? swaggerJsonInfo.Info.Title;
-            docModel.Version = parameters.Version ?? swaggerJsonInfo.Info.Version;
+            docModel.Title = parameters.Title ?? swaggerJsonInfo.SwaggerJsonInfo.Title;
+            docModel.Version = parameters.Version ?? swaggerJsonInfo.SwaggerJsonInfo.Version;
             docModel.Author = parameters.Author ?? "";
             docModel.DocumentDate = DateTime.Now;
             docModel.DocumentationEntries = PrepareDocumentationEntries(parameters.EndpointFilters, swaggerJsonInfo);
@@ -45,10 +43,10 @@ namespace Swagger2Pdf
             return docModel;
         }
 
-        private SwaggerInfo GetSwaggerInfoFromJsonString(string jsonString)
+        private SwaggerJsonModel GetSwaggerInfoFromJsonString(string jsonString)
         {
             Logger.Info("Retrieving reference resolver");
-            _referenceResolver = JsonConvert.DeserializeObject<ReferenceResolver>(jsonString, new PropertyBaseConverter());
+            _referenceResolver = JsonConvert.DeserializeObject<ReferenceResolver>(jsonString, new PropertyBaseJsonConverter());
 
             Logger.Info("Retrieveing swagger.json information");
             JsonConvert.DefaultSettings = () =>
@@ -59,24 +57,24 @@ namespace Swagger2Pdf
                     settings.Converters = new List<JsonConverter>();
                 }
 
-                settings.Converters.Add(new PropertyBaseConverter());
+                settings.Converters.Add(new PropertyBaseJsonConverter());
                 settings.Converters.Add(new SecurityDefinitionConverter());
                 return settings;
             };
 
             
-            var swaggerInfo = JsonConvert.DeserializeObject<SwaggerInfo>(jsonString);
+            var swaggerInfo = JsonConvert.DeserializeObject<SwaggerJsonModel>(jsonString);
             return swaggerInfo;
 
         }
 
-        private List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> endpointFiltersStrings, SwaggerInfo swaggerJsonInfo)
+        private List<EndpointInfo> PrepareDocumentationEntries(IEnumerable<string> endpointFiltersStrings, SwaggerJsonModel swaggerJsonJsonModel)
         {
             Logger.Info("Preparing endpoint information");
             var endpointFilters = endpointFiltersStrings?.Select(EndpointFilterFactory.CreateEndpointFilter).ToList() ?? new List<EndpointFilter>();
             var schemaResolutionContext = _referenceResolver.CreateResolutionContext();
 
-            var swaggerPdfEndpointList = swaggerJsonInfo.Paths
+            var swaggerPdfEndpointList = swaggerJsonJsonModel.Paths
                 .SelectMany(path => BuildEndpointEntry(path, schemaResolutionContext))
                 .ToList();
 
@@ -97,12 +95,12 @@ namespace Swagger2Pdf
             return filteredSwaggerPdfEndpointList;
         }
 
-        private static Dictionary<string, AuthorizationInfo> PrepareAuthorizationInfos(SwaggerInfo swaggerJsonInfo)
+        private static Dictionary<string, AuthorizationInfo> PrepareAuthorizationInfos(SwaggerJsonModel swaggerJsonJsonModel)
         {
-            return swaggerJsonInfo.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
+            return swaggerJsonJsonModel.SecurityDefinitions.ToDictionary(x => x.Key, x => x.Value.CreateAuthorizationInfo());
         }
 
-        private static IEnumerable<EndpointInfo> BuildEndpointEntry(KeyValuePair<string, Dictionary<string, Request>> path, SchemaResolutionContext schemaResolutionContext)
+        private static IEnumerable<EndpointInfo> BuildEndpointEntry(KeyValuePair<string, Dictionary<string, Operation>> path, SchemaResolutionContext schemaResolutionContext)
         {
             Logger.Info($"Processing endpoint: {path.Key}");
             return path.Value.Select(httpMethod => new EndpointInfo
@@ -111,16 +109,16 @@ namespace Swagger2Pdf
                 HttpMethod = httpMethod.Key.ToUpper(),
                 Deprecated = httpMethod.Value.Deprecated,
                 Summary = httpMethod.Value.Summary,
-                UrlParameters = httpMethod.Value.Parameters?.Where(x => x.In == "query")
+                QueryParameter = httpMethod.Value.OperationParameters?.Where(x => x.In == "query")
                     .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
                     .ToList(),
-                BodyParameters = httpMethod.Value.Parameters?.Where(x => x.In == "body")
+                BodyParameters = httpMethod.Value.OperationParameters?.Where(x => x.In == "body")
                     .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
                     .ToList(),
-                FormDataParameters = httpMethod.Value.Parameters?.Where(x => x.In == "formData")
+                FormDataParameters = httpMethod.Value.OperationParameters?.Where(x => x.In == "formData")
                     .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
                     .ToList(),
-                PathParameters = httpMethod.Value.Parameters?.Where(x => x.In == "path")
+                PathParameters = httpMethod.Value.OperationParameters?.Where(x => x.In == "path")
                     .Select(parameter => BuildParameter(parameter, schemaResolutionContext))
                     .ToList(),
                 Responses = httpMethod.Value.Responses?
@@ -129,21 +127,21 @@ namespace Swagger2Pdf
             });
         }
 
-        private static PdfGenerator.Model.Parameter BuildParameter(Parameter parameter, SchemaResolutionContext resolutionContext)
+        private static Parameter BuildParameter(OperationParameter operationParameter, SchemaResolutionContext resolutionContext)
         {
-            return new PdfGenerator.Model.Parameter
+            return new Parameter
             {
-                Name = parameter.Name,
-                IsRequired = parameter.ParameterRequired,
-                Schema = parameter.Schema?.ResolveSchema(resolutionContext) ?? parameter.Items?.ResolveSchema(resolutionContext),
-                Description = parameter.Description,
-                Type = parameter.Type,
+                Name = operationParameter.Name,
+                IsRequired = operationParameter.ParameterRequired,
+                Schema = operationParameter.Schema?.ResolveSchema(resolutionContext),// ?? operationParameter.Items?.ResolveSchema(resolutionContext),
+                Description = operationParameter.Description,
+                Type = operationParameter.Type,
             };
         }
 
-        private static PdfGenerator.Model.Response BuildResponse(KeyValuePair<string, Response> responseKvp, SchemaResolutionContext resolutionContext)
+        private static Response BuildResponse(KeyValuePair<string, OperationResponse> responseKvp, SchemaResolutionContext resolutionContext)
         {
-            return new PdfGenerator.Model.Response
+            return new Response
             {
                 Code = responseKvp.Key,
                 Description = responseKvp.Value.Description,

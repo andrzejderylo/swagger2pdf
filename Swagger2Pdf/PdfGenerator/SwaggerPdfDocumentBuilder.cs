@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -221,7 +220,7 @@ namespace Swagger2Pdf.PdfGenerator
 
         private static void DrawUrlParameters(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.UrlParameters != null && docEntry.UrlParameters.Any())
+            if (docEntry.QueryParameter != null && docEntry.QueryParameter.Any())
             {
                 document.AddParagraph();
                 document.AddParagraph("Query string parameters", p => p.AsSubHeader());
@@ -231,7 +230,7 @@ namespace Swagger2Pdf.PdfGenerator
                 table.AddHeaderCell("Schema");
                 table.AddHeaderCell("Description");
 
-                foreach (var queryParameter in docEntry.UrlParameters)
+                foreach (var queryParameter in docEntry.QueryParameter)
                 {
                     table = table.StartNewRow();
                     table.AddCell(queryParameter.Name ?? "");
