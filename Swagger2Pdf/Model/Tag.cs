@@ -12,9 +12,5 @@ namespace Swagger2Pdf.Model
         
         [JsonProperty("externalDocs")]
         public ExternalDoc ExternalDocs { get; set; }
-
-        public ExternalDoc get_ExternalDocs()
-        {
-        }
     }
 }
