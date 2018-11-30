@@ -1,6 +1,7 @@
 ﻿using iText.Layout.Element;
 using System.Collections.Generic;
 using iText.Layout.Properties;
+using Swagger2Pdf.PdfGenerator.Helpers;
 
 namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
 {
@@ -18,7 +19,7 @@ namespace Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation
             paragraph.AddLineBreak();
             paragraph.Add($"Authorization flow: {Flow}");
             paragraph.AddLineBreak();
-            var scopesTable = new Table(new float[] {50, 50}).AddStyle(PdfHelpers.BorderedStyle());
+            var scopesTable = new Table(new float[] {50, 50}).AddStyle(ParagraphHelper.BorderedStyle());
             scopesTable.SetWidth(UnitValue.CreatePercentValue(100));
             
             scopesTable.AddCell("Scope key");

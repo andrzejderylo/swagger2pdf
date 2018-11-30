@@ -13,9 +13,6 @@ namespace Swagger2Pdf.Model
         [JsonProperty("description")]
         public string Description { get; set; }
 
-        [JsonProperty("required")]
-        public bool ParameterRequired { get; set; }
-
         [JsonProperty("deprecated")]
         public bool Deprecated { get; set; }
 
@@ -65,7 +62,7 @@ namespace Swagger2Pdf.Model
         public string MinProperties { get; set; }
         
         [JsonProperty("required")]
-        public string Required { get; set; }
+        public bool ParameterRequired { get; set; }
         
         [JsonProperty("enum")]
         public string Enum { get; set; }

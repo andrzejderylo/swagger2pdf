@@ -6,6 +6,7 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using log4net;
+using Swagger2Pdf.PdfGenerator.Helpers;
 using Swagger2Pdf.PdfGenerator.Model;
 
 namespace Swagger2Pdf.PdfGenerator
@@ -57,11 +58,11 @@ namespace Swagger2Pdf.PdfGenerator
                 }
             }
 
-            document.AddParagraph(swaggerDocumentModel.Title, p => p.AsTitle().Centered());
-            document.AddParagraph(swaggerDocumentModel.Author, p => p.AsHeader().Centered());
-            document.AddParagraph(swaggerDocumentModel.Version, p => p.Centered());
-            document.AddParagraph(swaggerDocumentModel.DocumentDate.ToShortDateString(), p => p.Centered());
-            //document.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
+            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Title).AsTitle().Centered());
+            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Author).AsHeader().Centered());
+            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Version).Centered());
+            document.AddParagraph(p => p.AddText(swaggerDocumentModel.DocumentDate.ToShortDateString()).Centered());
+            //document.Footers.Primary.AddParagraph().AsSubHeader().Right().AddPageField();
         }
 
         private static void DrawAuthorizationInfoPage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
@@ -69,7 +70,7 @@ namespace Swagger2Pdf.PdfGenerator
             document.AddAreaBreak();
             document.AddParagraph("Authorization information", p => p.AsHeader());
             document.AddParagraph();
-            foreach (var authorizationInfo in swaggerDocumentModel.AuthorizationInfos)
+            foreach (var authorizationInfo in swaggerDocumentModel.AuthorizationInfo)
             {
                 document.AddParagraph($"Authorization option: {authorizationInfo.Key}", p => p.AsSubHeader().Bold());
                 document.AddParagraph();
@@ -90,7 +91,7 @@ namespace Swagger2Pdf.PdfGenerator
                 DrawFormDataParameters(docEntry, document);
                 DrawBodyParameters(docEntry, document);
                 DrawResponses(docEntry, document);
-                //document.Footers.Primary.AddParagraph().AsSubHeader().PullRight().AddPageField();
+                //document.Footers.Primary.AddParagraph().AsSubHeader().Right().AddPageField();
             }
         }
 
@@ -100,7 +101,7 @@ namespace Swagger2Pdf.PdfGenerator
             {
                 document.AddParagraph();
                 document.AddParagraph("Path parameters", p => p.AsSubHeader());
-                var table = PdfHelpers.CreateBorderedTable(new float[] {25, 25, 25, 25});
+                var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
                 
                 table.AddHeaderCell("Name");
                 table.AddHeaderCell("Type");
@@ -110,18 +111,18 @@ namespace Swagger2Pdf.PdfGenerator
                 foreach (var pathParameter in docEntry.PathParameters)
                 {
                     table = table.StartNewRow();
-                    table.AddCell(new Cell().VerticallyCenteredContent().AddParagraph(pathParameter.Name ?? ""));
-                    table.AddCell(new Cell().VerticallyCenteredContent().AddParagraph(pathParameter.Type ?? ""));
+                    table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Name ?? ""));
+                    table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Type ?? ""));
                     var schema = SwaggerPdfJsonConvert.SerializeObject(pathParameter.Schema);
                     if (schema != "null")
                     {
                         var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
-                        table.AddCell(new Cell().VerticallyCenteredContent().Add(schemaParagraph));
+                        table.AddCell(new Cell().VerticallyCentered().Add(schemaParagraph));
                     }
 
                     var description = new Paragraph(pathParameter.Description ?? "");
                     pathParameter.Schema?.WriteDetailedDescription(description);
-                    table.AddCell(new Cell().VerticallyCenteredContent().Add(description));
+                    table.AddCell(new Cell().VerticallyCentered().Add(description));
                 }
 
                 document.Add(table);
@@ -197,7 +198,7 @@ namespace Swagger2Pdf.PdfGenerator
             {
                 document.AddParagraph();
                 document.AddParagraph("Form data parameters", p => p.AsSubHeader());
-                var table = PdfHelpers.CreateBorderedTable(new float[] {33, 33, 33});
+                var table = ParagraphHelper.CreateBorderedTable(new float[] {33, 33, 33});
                 
                 table.AddHeaderCell("Parameter name");
                 table.AddHeaderCell("Type");
@@ -224,7 +225,7 @@ namespace Swagger2Pdf.PdfGenerator
             {
                 document.AddParagraph();
                 document.AddParagraph("Query string parameters", p => p.AsSubHeader());
-                var table = PdfHelpers.CreateBorderedTable(new float[] {25, 25, 25, 25});
+                var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
                 table.AddHeaderCell("Name");
                 table.AddHeaderCell("Type");
                 table.AddHeaderCell("Schema");
@@ -239,7 +240,7 @@ namespace Swagger2Pdf.PdfGenerator
                     if (schema != "null")
                     {
                         var paragraph = new Paragraph(schema);
-                        paragraph.AddStyle(PdfHelpers.FixedCharLengthStyle());
+                        paragraph.AsFixedCharLength();
                         table.AddCell(paragraph);
                     }
 

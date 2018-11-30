@@ -1,4 +1,5 @@
 ﻿using iText.Layout.Element;
+using Swagger2Pdf.PdfGenerator.Helpers;
 
 namespace Swagger2Pdf.PdfGenerator.Model.Schemas
 {
@@ -28,13 +29,13 @@ namespace Swagger2Pdf.PdfGenerator.Model.Schemas
             if (DefaultValue != null)
             {
                 paragraph.Add("Default value: ");
-                var txt = paragraph.AddFormattedText(PdfHelpers.FixedCharLengthStyle());
+                var txt = paragraph.AddText().AsFixedCharLength();
                 txt.SetText(SwaggerPdfJsonConvert.SerializeObject(DefaultValue));
                 paragraph.AddLineBreak();
             }
 
             paragraph.Add("Allowed values:");
-            var formattedText = paragraph.AddFormattedText(PdfHelpers.FixedCharLengthStyle());
+            var formattedText = paragraph.AddText().AsFixedCharLength();
             formattedText.SetText(SwaggerPdfJsonConvert.SerializeObject(EnumValues));
         }
     }

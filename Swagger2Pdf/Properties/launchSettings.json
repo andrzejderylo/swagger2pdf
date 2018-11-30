@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Swagger2Pdf": {
+      "commandName": "Project",
+      "commandLineArgs": "--input https://petstore.swagger.io/v2/swagger.json --output ./petstore.pdf --picture ./image.png"
+    }
+  }
+}
