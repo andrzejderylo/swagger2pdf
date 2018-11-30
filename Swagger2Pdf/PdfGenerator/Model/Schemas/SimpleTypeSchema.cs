@@ -9,19 +9,22 @@ namespace Swagger2Pdf.PdfGenerator.Model.Schemas
         {
             Type = type;
             Format = format;
-            ExampleValue = exampleValue ?? GetExampleValue();
+            ExampleValue = exampleValue ?? GetExampleValue(type, format);
         }
+
+        private static int CurrentIdentifier = 0;
+        private static double CurrentDouble = 0.5;
 
         public string Type { get; }
         public string Format { get; }
         public object ExampleValue { get; }
 
-        private object GetExampleValue()
+        private static object GetExampleValue(string type, string format)
         {
-            switch (Type)
+            switch (type)
             {
                 case "string":
-                    switch (Format)
+                    switch (format)
                     {
                         case "byte": return Convert.ToBase64String(Encoding.Unicode.GetBytes("example byte-encoded value"));
                         case "binary": return "binary string";
@@ -30,8 +33,8 @@ namespace Swagger2Pdf.PdfGenerator.Model.Schemas
                         case "password": return "***********";
                         default: return "string";
                     }
-                case "integer": return 12345;
-                case "number": return 123.45D;
+                case "integer": return ++CurrentIdentifier;
+                case "number": return CurrentDouble += 1;
                 case "object": return new object();
                 case "boolean": return true;
                 default: return null;

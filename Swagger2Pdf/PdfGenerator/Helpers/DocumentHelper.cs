@@ -31,10 +31,24 @@ namespace Swagger2Pdf.PdfGenerator.Helpers
             document.AddParagraph(text, p);
         }
 
-        public static Image AddImage(this Document document, string imagePath)
+        public static Image AddImage(this Document document, string imagePath, Action<Image> i = null)
         {
             var imgData = ImageDataFactory.Create(new Uri(imagePath));
             var image = new Image(imgData);
+            i?.Invoke(image);
+            document.Add(image);
+            return image;
+        }
+
+        public static Image AddCenteredImage(this Document document, string imagePath, Action<Image> i = null)
+        {
+            var imgData = ImageDataFactory.Create(new Uri(imagePath));
+            var image = new Image(imgData);
+            var margins = document.GetLeftMargin() + document.GetRightMargin();
+            var pageWidth = document.GetPdfDocument().GetDefaultPageSize().GetWidth();
+            var imageMargin = (pageWidth - (image.GetImageWidth() + margins)) / 2;
+            image.SetMarginLeft(imageMargin);
+            i?.Invoke(image);
             document.Add(image);
             return image;
         }

@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -47,22 +49,24 @@ namespace Swagger2Pdf.PdfGenerator
         }
 
         private static void DrawWelcomePage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
-        {   
+        {
             if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
             {
                 var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
                 if (imageFile.Exists)
-                {   
-                    var image = document.AddImage(imageFile.FullName);
-                    image.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                {
+                    document.AddCenteredImage(imageFile.FullName, i => i.SetMarginTop(150));
                 }
             }
+            else
+            {
+                document.Add(new Div().SetWidth(100).SetHeight(300));
+            }
 
-            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Title).AsTitle().Centered());
-            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Author).AsHeader().Centered());
-            document.AddParagraph(p => p.AddText(swaggerDocumentModel.Version).Centered());
-            document.AddParagraph(p => p.AddText(swaggerDocumentModel.DocumentDate.ToShortDateString()).Centered());
-            //document.Footers.Primary.AddParagraph().AsSubHeader().Right().AddPageField();
+            document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.Title).AsTitle());
+            document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.Author).AsHeader());
+            document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.Version));
+            document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.DocumentDate.ToShortDateString()));
         }
 
         private static void DrawAuthorizationInfoPage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
@@ -91,7 +95,6 @@ namespace Swagger2Pdf.PdfGenerator
                 DrawFormDataParameters(docEntry, document);
                 DrawBodyParameters(docEntry, document);
                 DrawResponses(docEntry, document);
-                //document.Footers.Primary.AddParagraph().AsSubHeader().Right().AddPageField();
             }
         }
 
@@ -118,6 +121,10 @@ namespace Swagger2Pdf.PdfGenerator
                     {
                         var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
                         table.AddCell(new Cell().VerticallyCentered().Add(schemaParagraph));
+                    }
+                    else
+                    {
+                        table.AddCell(string.Empty);
                     }
 
                     var description = new Paragraph(pathParameter.Description ?? "");
@@ -242,6 +249,10 @@ namespace Swagger2Pdf.PdfGenerator
                         var paragraph = new Paragraph(schema);
                         paragraph.AsFixedCharLength();
                         table.AddCell(paragraph);
+                    }
+                    else
+                    {
+                        table.AddCell(string.Empty);
                     }
 
                     var description = new Paragraph(queryParameter.Description ?? "");

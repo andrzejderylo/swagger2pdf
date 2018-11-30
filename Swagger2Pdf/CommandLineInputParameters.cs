@@ -18,7 +18,7 @@ namespace Swagger2Pdf
         [Option('p', "picture", Required = false, HelpText = "First page company logo picture. Maximum recommended width is 600px")]
         public string WelcomePageImagePath { get; set; }
 
-        [Option('a', "Author", Required = false, HelpText = "Includes documentation author")]
+        [Option('a', "author", Required = false, HelpText = "Includes documentation author")]
         public string Author { get; set; }
 
         [Option('t', "title", Required = false, HelpText = "Overrides title obtained from swagger.json")]

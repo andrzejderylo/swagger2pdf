@@ -1,6 +1,5 @@
 ﻿using iText.Kernel.Font;
 using iText.Layout;
-using iText.Layout.Element;
 using iText.Layout.Properties;
 
 namespace Swagger2Pdf.PdfGenerator.Helpers
@@ -9,17 +8,17 @@ namespace Swagger2Pdf.PdfGenerator.Helpers
     {
         public static TElement Right<TElement>(this TElement element) where TElement : ElementPropertyContainer<TElement>
         {
-            return element.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+            return element.SetTextAlignment(TextAlignment.RIGHT);
         }
         
         public static TElement Left<TElement>(this TElement element) where TElement : ElementPropertyContainer<TElement>
         {
-            return element.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+            return element.SetTextAlignment(TextAlignment.LEFT);
         }
         
         public static TElement Centered<TElement>(this TElement element) where TElement : ElementPropertyContainer<TElement>
         {
-            return element.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+            return element.SetTextAlignment(TextAlignment.CENTER);
         }
 
         public static TElement Bold<TElement>(this TElement element) where TElement : ElementPropertyContainer<TElement>
