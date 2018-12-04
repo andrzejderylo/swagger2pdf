@@ -27,7 +27,11 @@ namespace Swagger2Pdf
         [Option('v', "version", Required = false, HelpText = "Overrides version obtained from swagger.json")]
         public string Version { get; set; }
 
-        [Usage(ApplicationAlias = "Swagger2Pdf.exe")]
+#if WIN
+        [Usage(ApplicationAlias = "swagger2pdf.exe")]
+#else
+        [Usage(ApplicationAlias = "swagger2pdf")]
+#endif
         public static IEnumerable<Example> Examples
         {
             get

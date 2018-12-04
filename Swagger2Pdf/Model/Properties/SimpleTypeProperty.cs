@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Swagger2Pdf.PdfGenerator.Model;
 using Swagger2Pdf.PdfGenerator.Model.Schemas;
 

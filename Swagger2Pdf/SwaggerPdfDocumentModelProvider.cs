@@ -127,15 +127,32 @@ namespace Swagger2Pdf
             });
         }
 
-        private static Parameter BuildParameter(OperationParameter operationParameter, SchemaResolutionContext resolutionContext)
+        private static Parameter BuildParameter(OperationParameter p, SchemaResolutionContext resolutionContext)
         {
             return new Parameter
             {
-                Name = operationParameter.Name,
-                IsRequired = operationParameter.ParameterRequired,
-                Schema = operationParameter.Schema?.ResolveSchema(resolutionContext),// ?? operationParameter.Items?.ResolveSchema(resolutionContext),
-                Description = operationParameter.Description,
-                Type = operationParameter.Type,
+                Name = p.Name,
+                IsRequired = p.IsRequired,
+                Schema = p.Schema?.ResolveSchema(resolutionContext),
+                Description = p.Description,
+                Type = p.Type,
+                Deprecated = p.Deprecated,
+                AllowEmptyValue = p.AllowEmptyValue,
+                Enum = p.Enum,
+                ExclusiveMaximum = p.ExclusiveMaximum,
+                ExclusiveMinimum = p.ExclusiveMinimum,
+                MaxItems = p.MaxItems,
+                MaxLength = p.MaxLength,
+                MaxProperties = p.MaxProperties,
+                Maximum = p.Maximum,
+                MinItems = p.MinItems,
+                MinLength = p.MinLength,
+                MinProperties = p.MinProperties,
+                Minimum = p.Minimum,
+                MultipleOf = p.MultipleOf,
+                Pattern = p.Pattern,
+                Title = p.Title,
+                UniqueItems = p.UniqueItems
             };
         }
 

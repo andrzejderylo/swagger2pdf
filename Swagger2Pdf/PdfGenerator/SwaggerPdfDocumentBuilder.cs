@@ -1,12 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
-using iText.Layout.Properties;
 using log4net;
 using Swagger2Pdf.PdfGenerator.Helpers;
 using Swagger2Pdf.PdfGenerator.Model;
@@ -100,168 +97,150 @@ namespace Swagger2Pdf.PdfGenerator
 
         private static void DrawPathParameters(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.PathParameters != null && docEntry.PathParameters.Any())
-            {
-                document.AddParagraph();
-                document.AddParagraph("Path parameters", p => p.AsSubHeader());
-                var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
+            if (docEntry.PathParameters == null || !docEntry.PathParameters.Any()) return;
+
+            document.AddParagraph();
+            document.AddParagraph("Path parameters", p => p.AsSubHeader());
+            var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
                 
-                table.AddHeaderCell("Name");
-                table.AddHeaderCell("Type");
-                table.AddHeaderCell("Schema");
-                table.AddHeaderCell("Description");
+            table.AddHeaderCell("Name");
+            table.AddHeaderCell("Type");
+            table.AddHeaderCell("Schema");
+            table.AddHeaderCell("Description");
 
-                foreach (var pathParameter in docEntry.PathParameters)
+            foreach (var pathParameter in docEntry.PathParameters)
+            {
+                table = table.StartNewRow();
+                table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Name ?? ""));
+                table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Type ?? ""));
+                if (pathParameter.Schema != null)
                 {
-                    table = table.StartNewRow();
-                    table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Name ?? ""));
-                    table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Type ?? ""));
                     var schema = SwaggerPdfJsonConvert.SerializeObject(pathParameter.Schema);
-                    if (schema != "null")
-                    {
-                        var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
-                        table.AddCell(new Cell().VerticallyCentered().Add(schemaParagraph));
-                    }
-                    else
-                    {
-                        table.AddCell(string.Empty);
-                    }
-
-                    var description = new Paragraph(pathParameter.Description ?? "");
-                    pathParameter.Schema?.WriteDetailedDescription(description);
-                    table.AddCell(new Cell().VerticallyCentered().Add(description));
+                    var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
+                    table.AddCell(new Cell().VerticallyCentered().Add(schemaParagraph));
+                }
+                else
+                {
+                    table.AddCell(string.Empty);
                 }
 
-                document.Add(table);
+                var description = new Paragraph(pathParameter.Description ?? "");
+                pathParameter.Schema?.WriteDetailedDescription(description);
+                table.AddCell(new Cell().VerticallyCentered().Add(description));
             }
+
+            document.Add(table);
         }
 
         private static void DrawResponses(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.Responses != null)
+            if (docEntry.Responses == null) return;
+
+            document.AddParagraph();
+            document.AddParagraph("Responses", p => p.AsSubHeader());
+
+            foreach (var response in docEntry.Responses)
             {
-                document.AddParagraph();
-                document.AddParagraph("Responses", p => p.AsSubHeader());
-
-                foreach (var response in docEntry.Responses)
+                document.AddPageBreakableParagraph($"{response.Code}: {response.Description}", p => p.AddBorders());
+                if (response.Schema != null)
                 {
-                    document.AddPageBreakableParagraph($"{response.Code}: {response.Description}", p => p.AddBorders());
                     var responseBody = SwaggerPdfJsonConvert.SerializeObject(response.Schema);
-                    if (responseBody != "null")
-                    {
-                        document.AddPageBreakableParagraph(responseBody, p => p.AddBorders().AsFixedCharLength());
-                    }
-
-                    document.AddParagraph();
+                    document.AddPageBreakableParagraph(responseBody, p => p.AddBorders().AsFixedCharLength());
                 }
+
+                document.AddParagraph();
             }
         }
 
         private static void DrawEndpointHeader(EndpointInfo docEntry, Document document)
         {
-            var deprecatedStyle = new Style();
-            deprecatedStyle.SetFontColor(ColorConstants.RED);
-            deprecatedStyle.SetBold();
-            
-
-            document.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}", p =>
-            {
-                p.AsHeader();
-                if (docEntry.Deprecated)
-                {
-                    p.AddStyle(deprecatedStyle);
-                }
-            });
-            document.AddParagraph(docEntry.Summary, p =>
-            {
-                if (docEntry.Deprecated)
-                {
-                    p.AddStyle(deprecatedStyle);
-                }
-            });
             if (docEntry.Deprecated)
             {
-                document.AddParagraph("Deprecated", p => p.AddStyle(deprecatedStyle));
+                document.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}", p => p.AsHeader().Bold().SetLineThrough());
+                document.AddParagraph(docEntry.Summary, p => p.Bold().SetLineThrough());
+                document.AddParagraph("Deprecated", p => p.Bold().SetFontColor(ColorConstants.RED));
+            }
+            else
+            {
+                document.AddParagraph($"{docEntry.HttpMethod} {docEntry.EndpointPath}", p => p.AsHeader());
+                document.AddParagraph(docEntry.Summary);
             }
         }
 
         private static void DrawBodyParameters(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.BodyParameters != null && docEntry.BodyParameters.Any())
-            {
-                document.AddParagraph();
-                document.AddParagraph("Request body", p => p.AsSubHeader());
+            if (docEntry.BodyParameters == null || !docEntry.BodyParameters.Any()) return;
 
-                foreach (var bodyParameter in docEntry.BodyParameters)
-                {   
-                    document.AddPageBreakableParagraph(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema), p => p.AsFixedCharLength().AddBorders());
-                }
+            document.AddParagraph();
+            document.AddParagraph("Request body", p => p.AsSubHeader());
+
+            foreach (var bodyParameter in docEntry.BodyParameters)
+            {   
+                document.AddPageBreakableParagraph(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema), p => p.AsFixedCharLength().AddBorders());
             }
         }
 
         private static void DrawFormDataParameters(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.FormDataParameters != null && docEntry.FormDataParameters.Any())
-            {
-                document.AddParagraph();
-                document.AddParagraph("Form data parameters", p => p.AsSubHeader());
-                var table = ParagraphHelper.CreateBorderedTable(new float[] {33, 33, 33});
+            if (docEntry.FormDataParameters == null || !docEntry.FormDataParameters.Any()) return;
+
+            document.AddParagraph();
+            document.AddParagraph("Form data parameters", p => p.AsSubHeader());
+            var table = ParagraphHelper.CreateBorderedTable(new float[] {33, 33, 33});
                 
-                table.AddHeaderCell("Parameter name");
-                table.AddHeaderCell("Type");
-                table.AddHeaderCell("Description");
+            table.AddHeaderCell("Parameter name");
+            table.AddHeaderCell("Type");
+            table.AddHeaderCell("Description");
 
-                foreach (var parameter in docEntry.FormDataParameters)
-                {
-                    table = table.StartNewRow();
-                    table.AddCell(parameter.Name ?? "");
-                    table.AddCell(parameter.Type ?? "");
+            foreach (var parameter in docEntry.FormDataParameters)
+            {
+                table = table.StartNewRow();
+                table.AddCell(parameter.Name ?? "");
+                table.AddCell(parameter.Type ?? "");
 
-                    var description = new Paragraph(parameter.Description ?? "");
-                    parameter.Schema?.WriteDetailedDescription(description);
-                    table.AddCell(description);
-                }
-
-                document.Add(table);
+                var description = new Paragraph(parameter.Description ?? "");
+                parameter.Schema?.WriteDetailedDescription(description);
+                table.AddCell(description);
             }
+
+            document.Add(table);
         }
 
         private static void DrawUrlParameters(EndpointInfo docEntry, Document document)
         {
-            if (docEntry.QueryParameter != null && docEntry.QueryParameter.Any())
+            if (docEntry.QueryParameter == null || !docEntry.QueryParameter.Any()) return;
+
+            document.AddParagraph();
+            document.AddParagraph("Query string parameters", p => p.AsSubHeader());
+            var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
+            table.AddHeaderCell("Name");
+            table.AddHeaderCell("Type");
+            table.AddHeaderCell("Schema");
+            table.AddHeaderCell("Description");
+
+            foreach (var queryParameter in docEntry.QueryParameter)
             {
-                document.AddParagraph();
-                document.AddParagraph("Query string parameters", p => p.AsSubHeader());
-                var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
-                table.AddHeaderCell("Name");
-                table.AddHeaderCell("Type");
-                table.AddHeaderCell("Schema");
-                table.AddHeaderCell("Description");
-
-                foreach (var queryParameter in docEntry.QueryParameter)
+                table = table.StartNewRow();
+                table.AddCell(queryParameter.Name ?? "");
+                table.AddCell(queryParameter.Type ?? "");
+                if (queryParameter.Schema != null)
                 {
-                    table = table.StartNewRow();
-                    table.AddCell(queryParameter.Name ?? "");
-                    table.AddCell(queryParameter.Type ?? "");
                     var schema = SwaggerPdfJsonConvert.SerializeObject(queryParameter.Schema);
-                    if (schema != "null")
-                    {
-                        var paragraph = new Paragraph(schema);
-                        paragraph.AsFixedCharLength();
-                        table.AddCell(paragraph);
-                    }
-                    else
-                    {
-                        table.AddCell(string.Empty);
-                    }
-
-                    var description = new Paragraph(queryParameter.Description ?? "");
-                    queryParameter.Schema?.WriteDetailedDescription(description);
-                    table.AddCell(description);
+                    var paragraph = new Paragraph(schema);
+                    paragraph.AsFixedCharLength();
+                    table.AddCell(paragraph);
+                }
+                else
+                {
+                    table.AddCell(string.Empty);
                 }
 
-                document.Add(table);
+                var description = new Paragraph(queryParameter.Description ?? "");
+                queryParameter.Schema?.WriteDetailedDescription(description);
+                table.AddCell(description);
             }
+
+            document.Add(table);
         }
     }
 }

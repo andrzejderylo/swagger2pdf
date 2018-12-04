@@ -57,6 +57,6 @@ namespace Swagger2Pdf.PdfGenerator.Helpers
         }
 
         public static PdfFont FixedCharLengthFont => PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.COURIER);
-        public static PdfFont NormalLengthFont => PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.TIMES_ROMAN);
+        public static PdfFont NormalLengthFont => PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
     }
 }
