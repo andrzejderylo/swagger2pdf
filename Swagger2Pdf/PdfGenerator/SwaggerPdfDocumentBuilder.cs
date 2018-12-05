@@ -124,8 +124,8 @@ namespace Swagger2Pdf.PdfGenerator
                     table.AddCell(string.Empty);
                 }
 
-                var description = new Paragraph(pathParameter.Description ?? "");
-                pathParameter.Schema?.WriteDetailedDescription(description);
+                var description = new Paragraph();
+                pathParameter.WriteDetailedDescription(description);
                 table.AddCell(new Cell().VerticallyCentered().Add(description));
             }
 
@@ -198,8 +198,8 @@ namespace Swagger2Pdf.PdfGenerator
                 table.AddCell(parameter.Name ?? "");
                 table.AddCell(parameter.Type ?? "");
 
-                var description = new Paragraph(parameter.Description ?? "");
-                parameter.Schema?.WriteDetailedDescription(description);
+                var description = new Paragraph();
+                parameter.WriteDetailedDescription(description);
                 table.AddCell(description);
             }
 
@@ -235,8 +235,8 @@ namespace Swagger2Pdf.PdfGenerator
                     table.AddCell(string.Empty);
                 }
 
-                var description = new Paragraph(queryParameter.Description ?? "");
-                queryParameter.Schema?.WriteDetailedDescription(description);
+                var description = new Paragraph();
+                queryParameter.WriteDetailedDescription(description);
                 table.AddCell(description);
             }
 

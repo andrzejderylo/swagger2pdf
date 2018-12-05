@@ -35,7 +35,8 @@ namespace Swagger2Pdf.Model.Converters
                 {
                     Description = jObject["description"]?.ToString(),
                     Type = "array",
-                    Items = CreateItemsProperty(jObject["items"])
+                    Items = CreateItemsProperty(jObject["items"]),
+                    CollectionFormat = jObject["collectionFormat"]?.ToString()
                 };
             }
 

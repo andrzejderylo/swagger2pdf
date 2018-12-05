@@ -53,7 +53,7 @@ namespace Swagger2Pdf.Model
         public string MinItems { get; set; }
 
         [JsonProperty("uniqueItems")]
-        public string UniqueItems { get; set; }
+        public bool UniqueItems { get; set; }
         
         [JsonProperty("maxProperties")]
         public string MaxProperties { get; set; }

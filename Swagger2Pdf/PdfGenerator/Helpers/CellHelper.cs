@@ -18,6 +18,4 @@ namespace Swagger2Pdf.PdfGenerator.Helpers
             return cell;
         }
     }
-
-
 }

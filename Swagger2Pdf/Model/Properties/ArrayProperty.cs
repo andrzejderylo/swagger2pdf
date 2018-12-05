@@ -11,9 +11,11 @@ namespace Swagger2Pdf.Model.Properties
 
         public PropertyBase Items { get; set; }
 
+        public string CollectionFormat { get; set; }
+
         public override Schema ResolveSchema(SchemaResolutionContext resolutionContext)
         {
-            return new ArraySchema(Items.ResolveSchema(resolutionContext));
+            return new ArraySchema(Items.ResolveSchema(resolutionContext), CollectionFormat);
         }
     }
 }
