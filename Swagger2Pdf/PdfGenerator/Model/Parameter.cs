@@ -23,8 +23,7 @@ namespace Swagger2Pdf.PdfGenerator.Model
 
         public string MinLength { get; set; }
         public string MaxLength { get; set; }
-        
-        
+
         public string MaxItems { get; set; }
         public string MinItems { get; set; }
 

@@ -101,8 +101,8 @@ namespace Swagger2Pdf.PdfGenerator
 
             document.AddParagraph();
             document.AddParagraph("Path parameters", p => p.AsSubHeader());
-            var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
-                
+            var table = ParagraphHelper.CreateBorderedTable(new float[] { 25, 25, 25, 25 });
+
             table.AddHeaderCell("Name");
             table.AddHeaderCell("Type");
             table.AddHeaderCell("Schema");
@@ -113,15 +113,15 @@ namespace Swagger2Pdf.PdfGenerator
                 table = table.StartNewRow();
                 table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Name ?? ""));
                 table.AddCell(new Cell().VerticallyCentered().AddParagraph(pathParameter.Type ?? ""));
-                if (pathParameter.Schema != null)
+                if (pathParameter.Schema == null)
+                {
+                    table.AddCell(string.Empty);
+                }
+                else
                 {
                     var schema = SwaggerPdfJsonConvert.SerializeObject(pathParameter.Schema);
                     var schemaParagraph = new Paragraph(schema).AsFixedCharLength();
                     table.AddCell(new Cell().VerticallyCentered().Add(schemaParagraph));
-                }
-                else
-                {
-                    table.AddCell(string.Empty);
                 }
 
                 var description = new Paragraph();
@@ -175,7 +175,7 @@ namespace Swagger2Pdf.PdfGenerator
             document.AddParagraph("Request body", p => p.AsSubHeader());
 
             foreach (var bodyParameter in docEntry.BodyParameters)
-            {   
+            {
                 document.AddPageBreakableParagraph(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema), p => p.AsFixedCharLength().AddBorders());
             }
         }
@@ -186,8 +186,8 @@ namespace Swagger2Pdf.PdfGenerator
 
             document.AddParagraph();
             document.AddParagraph("Form data parameters", p => p.AsSubHeader());
-            var table = ParagraphHelper.CreateBorderedTable(new float[] {33, 33, 33});
-                
+            var table = ParagraphHelper.CreateBorderedTable(new float[] { 33, 33, 33 });
+
             table.AddHeaderCell("Parameter name");
             table.AddHeaderCell("Type");
             table.AddHeaderCell("Description");
@@ -212,7 +212,7 @@ namespace Swagger2Pdf.PdfGenerator
 
             document.AddParagraph();
             document.AddParagraph("Query string parameters", p => p.AsSubHeader());
-            var table = ParagraphHelper.CreateBorderedTable(new float[] {25, 25, 25, 25});
+            var table = ParagraphHelper.CreateBorderedTable(new float[] { 25, 25, 25, 25 });
             table.AddHeaderCell("Name");
             table.AddHeaderCell("Type");
             table.AddHeaderCell("Schema");
@@ -223,16 +223,16 @@ namespace Swagger2Pdf.PdfGenerator
                 table = table.StartNewRow();
                 table.AddCell(queryParameter.Name ?? "");
                 table.AddCell(queryParameter.Type ?? "");
-                if (queryParameter.Schema != null)
+                if (queryParameter.Schema == null)
+                {
+                    table.AddCell(string.Empty);
+                }
+                else
                 {
                     var schema = SwaggerPdfJsonConvert.SerializeObject(queryParameter.Schema);
                     var paragraph = new Paragraph(schema);
                     paragraph.AsFixedCharLength();
                     table.AddCell(paragraph);
-                }
-                else
-                {
-                    table.AddCell(string.Empty);
                 }
 
                 var description = new Paragraph();
