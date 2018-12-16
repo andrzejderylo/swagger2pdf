@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
+using iText.Html2pdf;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -29,6 +32,10 @@ namespace Swagger2Pdf.PdfGenerator
             Logger.Info("Drawing welcome page");
             DrawWelcomePage(_document, swaggerDocumentModel);
             Logger.Info("Drawing welcome page done.");
+
+            Logger.Info("Drawing custom page");
+            DrawCustomPage(_document, swaggerDocumentModel);
+            Logger.Info("Drawing custom page done");
 
             Logger.Info("Drawing authorization info page");
             DrawAuthorizationInfoPage(_document, swaggerDocumentModel);
@@ -64,6 +71,40 @@ namespace Swagger2Pdf.PdfGenerator
             document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.Author).AsHeader());
             document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.Version));
             document.AddParagraph(p => p.Centered().AddText(swaggerDocumentModel.DocumentDate.ToShortDateString()));
+        }
+
+        private void DrawCustomPage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)
+        {
+            var customPagePath = swaggerDocumentModel.CustomPageName;
+            if (string.IsNullOrEmpty(customPagePath))
+            {
+                Logger.Info("No custom page");
+                return;
+            }
+            FileInfo customPageFileInfo = new FileInfo(customPagePath);
+            if (!customPageFileInfo.Exists) throw new ArgumentException($"File {customPagePath} does not exist");
+            if (customPageFileInfo.Extension != ".md") throw new ArgumentException($"Only markdown (.md) files are supported. Current: {customPageFileInfo.Extension}");
+
+            Logger.Info("Writing custom page");
+
+            using (var reader = new StreamReader(customPageFileInfo.FullName))
+            using (var writer = new StringWriter())
+            {
+                CommonMark.CommonMarkConverter.Convert(reader, writer);
+                var sb = new StringBuilder();
+                sb.Append("<html><head><style>");
+                sb.Append(Properties.Resources.github_markdown);
+                sb.Append("</style></head><body class=\"markdown-body\">");
+                sb.Append(writer.GetStringBuilder());
+                sb.Append("</body>");
+                var htmlString = sb.ToString();
+                var elements = HtmlConverter.ConvertToElements(htmlString);
+                document.AddAreaBreak();
+                foreach(var element in elements)
+                {
+                    document.Add((IBlockElement)element);
+                }
+            }
         }
 
         private static void DrawAuthorizationInfoPage(Document document, SwaggerPdfDocumentModel swaggerDocumentModel)

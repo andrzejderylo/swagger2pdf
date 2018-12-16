@@ -7,10 +7,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\github-markdown.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\github-markdown.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.3.0" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="itext7" Version="7.1.4" />
+    <PackageReference Include="itext7.pdfhtml" Version="2.1.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

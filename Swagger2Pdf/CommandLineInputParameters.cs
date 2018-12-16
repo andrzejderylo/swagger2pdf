@@ -12,6 +12,9 @@ namespace Swagger2Pdf
         [Option('o', "output", Required = true, HelpText = "Output pdf file name")]
         public string OutputFileName { get; set; }
 
+        [Option('c', "custom-page", Required = false, HelpText = "Custom page after welcome page. Only markdown (.md) supported")]
+        public string CustomPageName { get; set; }
+
         [Option('f', "filter", Required = false, HelpText = "Prints only specified endpoints. Wildcard (*) supported.")]
         public IEnumerable<string> EndpointFilters { get; set; }
 

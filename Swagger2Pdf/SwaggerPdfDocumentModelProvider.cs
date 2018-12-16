@@ -39,6 +39,7 @@ namespace Swagger2Pdf
             docModel.DocumentDate = DateTime.Now;
             docModel.DocumentationEntries = PrepareDocumentationEntries(parameters.EndpointFilters, swaggerJsonInfo);
             docModel.AuthorizationInfo = PrepareAuthorizationInfos(swaggerJsonInfo);
+            docModel.CustomPageName = parameters.CustomPageName;
 
             return docModel;
         }
