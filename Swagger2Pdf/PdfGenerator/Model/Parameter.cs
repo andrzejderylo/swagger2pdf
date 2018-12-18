@@ -61,22 +61,22 @@ namespace Swagger2Pdf.PdfGenerator.Model
             GetMinMaxProperties().IfNotNull(x => p.AddLineBreak().AddText(x));
         }
 
-        private string GetMinMaxString()
+        public string GetMinMaxString()
         {
             return GetTwoPartString("Minimum", Minimum, "maximum", Maximum);
         }
 
-        private string GetExclusiveMinMaxString()
+        public string GetExclusiveMinMaxString()
         {
             return GetTwoPartString("Exclusive minimum", ExclusiveMinimum, "exclusive maximum", ExclusiveMaximum);
         }
 
-        private string GetMinMaxItems()
+        public string GetMinMaxItems()
         {
             return GetTwoPartString("Minimum items", MinItems, "maximum items", MaxItems);
         }
 
-        private string GetMinMaxProperties()
+        public string GetMinMaxProperties()
         {
             return GetTwoPartString("Minimum properties", MinProperties, "maximum properties", MaxProperties);
         }

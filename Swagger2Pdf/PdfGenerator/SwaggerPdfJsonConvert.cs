@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Swagger2Pdf.PdfGenerator.Model.Schemas.Serialization;
@@ -32,14 +33,37 @@ namespace Swagger2Pdf.PdfGenerator
         {
             using (TextWriter sw = new StringWriter())
             {
-                using (JsonTextWriter jw = new JsonTextWriter(sw))
+                using (JsonTextWriterEx jw = new JsonTextWriterEx(sw))
                 {
+                    
                     jw.Indentation = 2;
+                    jw.NewLine = "\u000A";
                     jw.IndentChar = '\u00A0';
                     jw.Formatting = Formatting.Indented;
                     JsonSerializer serializer = JsonSerializer.Create(SerializerSettingsFactory());
                     serializer.Serialize(jw, obj);
                     return sw.ToString();
+                }
+            }
+        }
+
+        public class JsonTextWriterEx : JsonTextWriter
+        {
+            public string NewLine { get; set; }
+
+            public JsonTextWriterEx(TextWriter textWriter) : base(textWriter)
+            {
+                NewLine = Environment.NewLine;
+            }
+
+            protected override void WriteIndent()
+            {
+                if (Formatting == Formatting.Indented)
+                {
+                    WriteWhitespace(NewLine);
+                    int currentIndentCount = Top * Indentation;
+                    for (int i = 0; i < currentIndentCount; i++)
+                        WriteIndentSpace();
                 }
             }
         }

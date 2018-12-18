@@ -3,6 +3,7 @@ using System.Reflection;
 using CommandLine;
 using log4net;
 using log4net.Config;
+using Swagger2Pdf.HtmlDocumentBuilder;
 using Swagger2Pdf.PdfGenerator;
 
 namespace Swagger2Pdf
@@ -37,7 +38,7 @@ namespace Swagger2Pdf
                 Logger.Info("Processing started");
                 var swaggerPdfDocumentProvider = new SwaggerPdfDocumentModelProvider();
                 var swaggerPdfModel = swaggerPdfDocumentProvider.PrepareSwaggerPdfModel(parameters);
-                var swaggerPdfDocumentBuilder = new SwaggerPdfDocumentBuilder(swaggerPdfModel);
+                PdfBuilderBase swaggerPdfDocumentBuilder = new HtmlPdfBuilder();
                 swaggerPdfDocumentBuilder.BuildPdf(swaggerPdfModel);
                 Logger.Info("Processing successful");
                 Environment.Exit(0);
