@@ -47,49 +47,69 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         } 
 
         public HtmlElement Div() => AddElement();
-        public HtmlElement H1() => AddElement();
-        public HtmlElement H2() => AddElement();
-        public HtmlElement H3() => AddElement();
-        public HtmlElement H4() => AddElement();
-        public HtmlElement H5() => AddElement();
-        public HtmlElement H6() => AddElement();
-        public HtmlElement A() => AddElement();
-        public HtmlElement Img() => AddElement();
-        public HtmlElement P() => AddElement();
-        public HtmlElement Pre() => AddElement();
-        public HtmlElement Code() => AddElement();
+        public TextContainerElement P() => AddTextElement();
+        public TextContainerElement H1() => AddTextElement();
+        public TextContainerElement H2() => AddTextElement();
+        public TextContainerElement H3() => AddTextElement();
+        public TextContainerElement H4() => AddTextElement();
+        public TextContainerElement H5() => AddTextElement();
+        public TextContainerElement H6() => AddTextElement();
+        public TextContainerElement Pre() => AddTextElement();
+        public TextContainerElement Code() => AddTextElement();
+        public TextContainerElement Label() => AddTextElement();
+
+        public Link A()
+        {
+            Link element = HtmlElement.A();
+            _bodyElements.Add(element);
+            return element;
+        }
+
+        public Image Img()
+        {
+            Image element = HtmlElement.Img();
+            _bodyElements.Add(element);
+            return element;
+        }
 
         public TableElement Table()
         {
-            var table = new TableElement();
+            var table = HtmlElement.Table();
             _bodyElements.Add(table);
             return table;
         }
 
         public HtmlElement Ul()
         {
-            var ul = new UnorderedHtmlList();
+            var ul = HtmlElement.Ul();
             _bodyElements.Add(ul);
             return ul;
         }
 
         public HtmlElement Ol()
         {
-            var ul = new OrderedHtmlList();
+            var ul = HtmlElement.Ol();
             _bodyElements.Add(ul);
             return ul;
         }
 
-        public HtmlElement AddElement([CallerMemberName] string elementName = "div")
+        public void AddCustomPage(StringBuilder getStringBuilder)
+        {
+            Div().AddChildElement(new RawContent(getStringBuilder));
+        }
+
+        private HtmlElement AddElement([CallerMemberName] string elementName = "div")
         {
             var element = new HtmlElement(elementName);
             _bodyElements.Add(element);
             return element;
         }
 
-        public void AddCustomPage(StringBuilder getStringBuilder)
+        private TextContainerElement AddTextElement([CallerMemberName] string elementName = "label")
         {
-            Div().AddChildElement(new TextContent(getStringBuilder.ToString()));
+            var textElement = new TextContainerElement(elementName);
+            _bodyElements.Add(textElement);
+            return textElement;
         }
     }
 }

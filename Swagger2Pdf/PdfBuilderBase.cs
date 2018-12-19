@@ -8,7 +8,12 @@ namespace Swagger2Pdf
 {
     public abstract class PdfBuilderBase
     {
-        public static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
+        public readonly ILog Logger = GetLogger();
+
+        private static ILog GetLogger()
+        {
+            return LogManager.GetLogger(typeof(Program));
+        }
 
         public void BuildPdf(SwaggerPdfDocumentModel swaggerDocumentModel)
         {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using iText.Html2pdf;
-using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
 using Swagger2Pdf.PdfGenerator;
 using Swagger2Pdf.PdfGenerator.Helpers;
 using Swagger2Pdf.PdfGenerator.Model;
@@ -15,31 +11,29 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
 {
     public class HtmlPdfBuilder : PdfBuilderBase
     {
-        private readonly HtmlDocumentBuilder document = new HtmlDocumentBuilder();
+        private readonly HtmlDocumentBuilder _document = new HtmlDocumentBuilder();
 
         protected override void WriteCustomPage(StringWriter writer)
         {
-            document.AddCustomPage(writer.GetStringBuilder());
+            _document.AddCustomPage(writer.GetStringBuilder());
         }
 
         protected override void DrawResponses(List<Response> docEntryResponses)
         {
             if(!docEntryResponses.Any()) return;
 
-            document.P();
-            document.H2().AddChildElement(new TextContent("Responses"));
+            _document.P();
+            _document.H2().SetText("Responses");
 
             foreach (var response in docEntryResponses)
             {
-                document.P()
-                    .AddChildElement(new TextContent($"{response.Code}: {response.Description}"))
-                    .SetStyle("border", "2px solid black");
+                var p = _document.P().SetText($"{response.Code}: {response.Description}")
+                    .SetStyle("border", "1px solid #c6cbd1");
 
                 if (response.Schema != null)
                 {
                     var responseBody = SwaggerPdfJsonConvert.SerializeObject(response.Schema);
-                    document.P().SetStyle("border", "2px solid black")
-                        .AddChildElement(new HtmlElement("pre").AddChildElement(new TextContent(responseBody)));
+                    p.AddChildElement(HtmlElement.Pre().SetText(responseBody));
                 }
             }
         }
@@ -48,16 +42,13 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if(!docEntryBodyParameters.Any()) return;
 
-            document.P();
-            document.H2().AddChildElement(new TextContent("Request body"));
+            _document.P();
+            _document.H2().SetText("Request body");
 
             foreach (var bodyParameter in docEntryBodyParameters)
             {
-                var bodyParameterJson = new HtmlElement("pre");
-                bodyParameterJson
-                    .AddChildElement(new TextContent(SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema)));
-
-                document.P().AddChildElement(bodyParameterJson).SetStyle("border", "1px solid black");
+                var schema = SwaggerPdfJsonConvert.SerializeObject(bodyParameter.Schema);
+                _document.Pre().SetText(schema);
             }
         }
 
@@ -65,15 +56,15 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if (!docEntryFormDataParameters.Any()) return;
 
-            document.P();
-            document.H2().AddChildElement(new TextContent("Path parameters"));
-            var table = document.Table();
+            _document.P();
+            _document.H2().SetText("Path parameters");
+            var table = _document.Table();
             table.AddColumns(new TextContent("Name"), new TextContent("Type"), new TextContent("Description"));
             foreach (var parameter in docEntryFormDataParameters)
             {
                 var nameCell = new TextContent(parameter.Name ?? "");
                 var typeCell = new TextContent(parameter.Type ?? "");
-                var descriptionCell = new HtmlElement("p");
+                var descriptionCell = HtmlElement.P();
                 WriteDetailedDescription(descriptionCell, parameter);
                 table.AddRow(nameCell, typeCell, descriptionCell);
             }
@@ -83,9 +74,9 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if (!docEntryQueryParameter.Any()) return;
 
-            document.P();
-            document.H2().AddChildElement(new TextContent("Path parameters"));
-            var table = document.Table();
+            _document.P();
+            _document.H2().SetText("Path parameters");
+            var table = _document.Table();
             table.AddColumns(new TextContent("Name"), new TextContent("Type"), new TextContent("Schema"), new TextContent("Description"));
             foreach (var parameter in docEntryQueryParameter)
             {
@@ -95,9 +86,10 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
                 if (parameter.Schema != null)
                 {
                     var schema = SwaggerPdfJsonConvert.SerializeObject(parameter.Schema);
-                    schemaCell = new HtmlElement("pre").AddChildElement(new TextContent(schema));
+                    schemaCell = HtmlElement.Pre().SetText(schema);
                 }
-                var descriptionCell = new HtmlElement("p");
+
+                var descriptionCell = HtmlElement.P();
                 WriteDetailedDescription(descriptionCell, parameter);
                 table.AddRow(nameCell, typeCell, schemaCell, descriptionCell);
             }
@@ -107,9 +99,9 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if (!docEntryPathParameters.Any()) return;
 
-            document.P();
-            document.H2().AddChildElement(new TextContent("Path parameters"));
-            var table = document.Table();
+            _document.P();
+            _document.H2().SetText("Path parameters");
+            var table = _document.Table();
                 table.AddColumns(new TextContent("Name"), new TextContent("Type"), new TextContent("Schema"), new TextContent("Description"));
             foreach (var parameter in docEntryPathParameters)
             {
@@ -119,9 +111,9 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
                 if (parameter.Schema != null)
                 {
                     var schema = SwaggerPdfJsonConvert.SerializeObject(parameter.Schema);
-                    schemaCell = new HtmlElement("pre").AddChildElement(new TextContent(schema));
+                    schemaCell = HtmlElement.Pre().SetText(schema);
                 }
-                var descriptionCell = new HtmlElement("p");
+                var descriptionCell = HtmlElement.P();
                 WriteDetailedDescription(descriptionCell, parameter);
                 table.AddRow(nameCell, typeCell, schemaCell, descriptionCell);
             }
@@ -131,20 +123,14 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if (docEntry.Deprecated)
             {
-                document.H1()
-                    .AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent($"{docEntry.HttpMethod} {docEntry.EndpointPath}")))
-                    .SetStyle("text-decoration", "line-through");
-                document.P()
-                    .AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent(docEntry.Summary)))
-                    .SetStyle("text-decoration", "line-through");
-                document.P().AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent("Deprecated")));
+                _document.H1().Bold().Deleted().SetText($"{docEntry.HttpMethod} {docEntry.EndpointPath}");
+                _document.P().Bold().Deleted().SetText(docEntry.Summary);
+                _document.P().Bold().SetText("Deprecated");
             }
             else
             {
-                document.H1()
-                    .AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent($"{docEntry.HttpMethod} {docEntry.EndpointPath}")));
-                document.P()
-                    .AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent(docEntry.Summary)));
+                _document.H1().Bold().SetText($"{docEntry.HttpMethod} {docEntry.EndpointPath}");
+                _document.P().Bold().SetText(docEntry.Summary);
             }
         }
 
@@ -155,29 +141,29 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
                 var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
                 if (imageFile.Exists)
                 {
-                    document.Img().SetAttribute("src", imageFile.FullName).SetStyle("margin-top", "150px");
+                    _document.Img().Src(imageFile.FullName).SetStyle("margin-top", "150px");
                 }
             }
             else
             {
-                document.Div().SetStyle("width", "100px").SetStyle("height", "300").SetStyle("display", "block");
+                _document.Div().SetStyle("width", "100px").SetStyle("height", "300").SetStyle("display", "block");
             }
 
 
-            document.H1().AddChildElement(new TextContent(swaggerDocumentModel.Title)).SetStyle("text-align", "center");
-            document.H2().AddChildElement(new TextContent(swaggerDocumentModel.Author)).SetStyle("text-align", "center");
-            document.H3().AddChildElement(new TextContent(swaggerDocumentModel.Version)).SetStyle("text-align", "center");
-            document.H3().AddChildElement(new TextContent(swaggerDocumentModel.DocumentDate.ToShortDateString())).SetStyle("text-align", "center");
+            swaggerDocumentModel.Title.IfNotNull(x => _document.H1().HorizontalCenter().SetText(x));
+            swaggerDocumentModel.Author.IfNotNull(x => _document.H2().HorizontalCenter().SetText(x));
+            swaggerDocumentModel.Version.IfNotNull(x => _document.H3().HorizontalCenter().SetText(x));
+            swaggerDocumentModel.DocumentDate.ToShortDateString().IfNotNull(x => _document.H3().HorizontalCenter().SetText(x));
         }
 
         protected override void BeginNewPage()
         {
-            document.AddPageBreak();
+            _document.AddPageBreak();
         }
 
         protected override void SaveDocument(SwaggerPdfDocumentModel swaggerDocumentModel)
         {
-            var documentString = document.GetDocumentString();
+            var documentString = _document.GetDocumentString();
             var pdfDocument = new PdfDocument(new PdfWriter(swaggerDocumentModel.PdfDocumentPath));
             HtmlConverter.ConvertToDocument(documentString, pdfDocument, new ConverterProperties());
             pdfDocument.Close();
@@ -191,24 +177,24 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             if (p.Deprecated)
             {
-                element.AddChildElement(new TextContent("Deprecated").SetStyle("font-color", "red"));
-                p.Description.IfNotNull(x => element.AddChildElement(new TextContent(x)).SetStyle("font-color", "red").SetStyle("text-decoration", "line-through"));
+                element.AddChildElement(HtmlElement.Label().SetText("Deprecated").SetColor("red"));
+                p.Description.IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x).Deleted().SetColor("red")));
             }
             else
             {
-                p.Description.IfNotNull(x => element.AddChildElement(new TextContent(x)));
+                p.Description.IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x)));
             }
 
             if (p.IsRequired)
             {
-                element.AddChildElement(new HtmlElement("strong").AddChildElement(new TextContent("Required")));
+                element.AddChildElement(HtmlElement.Label().Bold().SetText("Required"));
             }
 
-            p.Pattern.IfNotNull(x => element.AddChildElement(new TextContent($"Pattern: {x}")));
-            p.GetMinMaxString().IfNotNull(x => element.AddChildElement(new TextContent(x)));
-            p.GetExclusiveMinMaxString().IfNotNull(x => element.AddChildElement(new TextContent(x)));
-            p.GetMinMaxItems().IfNotNull(x => element.AddChildElement(new TextContent(x)));
-            p.GetMinMaxProperties().IfNotNull(x => element.AddChildElement(new TextContent(x)));
+            p.Pattern.IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText($"Pattern: {x}")));
+            p.GetMinMaxString().IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x)));
+            p.GetExclusiveMinMaxString().IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x)));
+            p.GetMinMaxItems().IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x)));
+            p.GetMinMaxProperties().IfNotNull(x => element.AddChildElement(HtmlElement.Label().SetText(x)));
         }
     }
 }

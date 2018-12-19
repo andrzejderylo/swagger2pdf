@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using iText.Html2pdf.Attach.Impl.Tags;
 
 namespace Swagger2Pdf.HtmlDocumentBuilder
 {
@@ -49,7 +51,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             return this;
         }
 
-        public virtual void WriteStartTag(StringBuilder htmlStringBuilder)
+        protected virtual void WriteStartTag(StringBuilder htmlStringBuilder)
         {
             htmlStringBuilder.Append("<");
             htmlStringBuilder.Append(ElementName);
@@ -58,7 +60,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             htmlStringBuilder.Append(">");
         }
 
-        public virtual void WriteAttributes(StringBuilder htmlStringBuilder)
+        protected virtual void WriteAttributes(StringBuilder htmlStringBuilder)
         {
             foreach (var attribute in _attributes)
             {
@@ -70,7 +72,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             }
         }
 
-        public void WriteDictionaryAttributes(StringBuilder htmlStringBuilder)
+        protected void WriteDictionaryAttributes(StringBuilder htmlStringBuilder)
         {
             foreach (var attribute in _dictionaryAttributes)
             {
@@ -89,14 +91,14 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             }
         }
 
-        public virtual void WriteEndTag(StringBuilder htmlStringBuilder)
+        protected virtual void WriteEndTag(StringBuilder htmlStringBuilder)
         {
             htmlStringBuilder.Append("</");
             htmlStringBuilder.Append(ElementName);
             htmlStringBuilder.Append(">");
         }
 
-        public virtual void WriteContent(StringBuilder htmlStringBuilder)
+        protected virtual void WriteContent(StringBuilder htmlStringBuilder)
         {
             foreach (var childElement in _contentElements)
             {
@@ -117,5 +119,26 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             WriteElement(sb);
             return sb.ToString();
         }
+
+        public static HtmlElement Div() => AddElement();
+        public static TextContainerElement P() => AddTextElement();
+        public static TextContainerElement H1() => AddTextElement();
+        public static TextContainerElement H2() => AddTextElement();
+        public static TextContainerElement H3() => AddTextElement();
+        public static TextContainerElement H4() => AddTextElement();
+        public static TextContainerElement H5() => AddTextElement();
+        public static TextContainerElement H6() => AddTextElement();
+        public static TextContainerElement Pre() => AddTextElement();
+        public static TextContainerElement Code() => AddTextElement();
+        public static TextContainerElement Label() => AddTextElement();
+        public static TextContent Text(string text) => new TextContent(text);
+
+        public static Link A() => new Link();
+        public static Image Img() => new Image();
+        public static TableElement Table() => new TableElement();
+        public static UnorderedHtmlList Ul() => new UnorderedHtmlList();
+        public static OrderedHtmlList Ol() => new OrderedHtmlList();
+        private static HtmlElement AddElement([CallerMemberName] string elementName = "div") => new HtmlElement(elementName);
+        private static TextContainerElement AddTextElement([CallerMemberName] string elementName = "label") => new TextContainerElement(elementName);
     }
 }

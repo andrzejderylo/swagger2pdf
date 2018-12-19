@@ -26,7 +26,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
             return this;
         }
 
-        public override void WriteContent(StringBuilder htmlStringBuilder)
+        protected override void WriteContent(StringBuilder htmlStringBuilder)
         {
             var tableHead = new HtmlElement("thead");
             foreach (var header in _header)
