@@ -4,7 +4,7 @@ using CommandLine;
 using log4net;
 using log4net.Config;
 using Swagger2Pdf.HtmlDocumentBuilder;
-using Swagger2Pdf.PdfGenerator;
+using Swagger2Pdf.PdfModel;
 
 namespace Swagger2Pdf
 {

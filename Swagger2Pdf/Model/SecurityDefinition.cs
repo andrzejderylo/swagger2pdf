@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Swagger2Pdf.PdfGenerator.Model;
+using Swagger2Pdf.PdfModel.Model;
 
 namespace Swagger2Pdf.Model
 {

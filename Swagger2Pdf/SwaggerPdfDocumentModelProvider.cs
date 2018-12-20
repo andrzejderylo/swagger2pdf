@@ -8,7 +8,7 @@ using Swagger2Pdf.Model;
 using Swagger2Pdf.Model.Converters;
 using Swagger2Pdf.Model.Properties;
 using Swagger2Pdf.Model.ReferenceResolver;
-using Swagger2Pdf.PdfGenerator.Model;
+using Swagger2Pdf.PdfModel.Model;
 
 namespace Swagger2Pdf
 {

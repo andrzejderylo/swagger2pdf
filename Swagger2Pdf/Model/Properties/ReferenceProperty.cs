@@ -1,6 +1,6 @@
 ﻿using System;
-using Swagger2Pdf.PdfGenerator.Model;
-using Swagger2Pdf.PdfGenerator.Model.Schemas;
+using Swagger2Pdf.PdfModel.Model;
+using Swagger2Pdf.PdfModel.Model.Schemas;
 
 namespace Swagger2Pdf.Model.Properties
 {

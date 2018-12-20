@@ -12,6 +12,8 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         {
             htmlStringBuilder.Append("<");
             htmlStringBuilder.Append(ElementName);
+            WriteAttributes(htmlStringBuilder);
+            WriteDictionaryAttributes(htmlStringBuilder);
         }
 
         protected override void WriteEndTag(StringBuilder htmlStringBuilder)

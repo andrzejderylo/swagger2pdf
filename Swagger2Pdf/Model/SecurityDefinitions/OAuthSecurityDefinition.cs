@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using Swagger2Pdf.PdfGenerator.Model;
-using Swagger2Pdf.PdfGenerator.Model.AuthorizationInformation;
+using Swagger2Pdf.PdfModel.Model;
+using Swagger2Pdf.PdfModel.Model.AuthorizationInformation;
 
 namespace Swagger2Pdf.Model.SecurityDefinitions
 {

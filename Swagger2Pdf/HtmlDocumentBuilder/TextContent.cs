@@ -7,10 +7,16 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
     public sealed class TextContent : HtmlElement
     {
         private readonly List<string> _textContentLines;
+        private readonly Queue<int> _lineWithinBreakShouldBeAdded = new Queue<int>();
 
-        public TextContent(string text) : base("")
+        public TextContent() : base("")
         {
-            _textContentLines = new List<string> {text};
+            _textContentLines = new List<string>();
+        }
+
+        public TextContent(string text) : this()
+        {
+            _textContentLines.Add(text);
         }
 
         protected override void WriteStartTag(StringBuilder htmlStringBuilder)
@@ -30,8 +36,14 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
 
         protected override void WriteContent(StringBuilder htmlStringBuilder)
         {
-            foreach (var text in _textContentLines)
+            for(int i = 0; i < _textContentLines.Count; i++)
             {
+                var text = _textContentLines[i];
+                if (_lineWithinBreakShouldBeAdded.Count != 0 && i == _lineWithinBreakShouldBeAdded.Peek())
+                {
+                    htmlStringBuilder.Append("<br>");
+                    _lineWithinBreakShouldBeAdded.Dequeue();
+                }
                 foreach (var c in text)
                 {
                     if (HtmlCodes.TryGetValue(c, out string replacement))
@@ -47,7 +59,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
 
         public TextContent LineBreak()
         {
-            _textContentLines.Add("\u00A0");
+            _lineWithinBreakShouldBeAdded.Enqueue(_textContentLines.Count);
             return this;
         }
 

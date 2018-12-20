@@ -140,5 +140,7 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         public static OrderedHtmlList Ol() => new OrderedHtmlList();
         private static HtmlElement AddElement([CallerMemberName] string elementName = "div") => new HtmlElement(elementName);
         private static TextContainerElement AddTextElement([CallerMemberName] string elementName = "label") => new TextContainerElement(elementName);
+
+        public static HtmlElement Br() => new Br();
     }
 }
