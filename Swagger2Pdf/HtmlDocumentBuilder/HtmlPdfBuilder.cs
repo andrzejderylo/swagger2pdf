@@ -169,10 +169,14 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         protected override void SaveDocument(SwaggerPdfDocumentModel swaggerDocumentModel)
         {
             var documentString = _document.GetDocumentString();
+            
             var pdfDocument = new PdfDocument(new PdfWriter(swaggerDocumentModel.PdfDocumentPath));
-            var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
             var properties = new ConverterProperties();
-            properties.SetBaseUri(imageFile.DirectoryName + "\\");
+            if (!string.IsNullOrEmpty(swaggerDocumentModel.WelcomePageImage))
+            {
+                var imageFile = new FileInfo(swaggerDocumentModel.WelcomePageImage);
+                properties.SetBaseUri(imageFile.DirectoryName + "\\");
+            }
             HtmlConverter.ConvertToDocument(documentString, pdfDocument, properties);
             pdfDocument.Close();
         }
