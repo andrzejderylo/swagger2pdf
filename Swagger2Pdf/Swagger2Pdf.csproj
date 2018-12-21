@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\github-markdown.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Assets\github-markdown.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -12,7 +13,14 @@ namespace Swagger2Pdf.HtmlDocumentBuilder
         public void Init(StringBuilder htmlStringBuilder)
         {
             htmlStringBuilder.Append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>");
-            htmlStringBuilder.Append(Properties.Resources.github_markdown);
+            var assembly = typeof(Program).Assembly;
+            using (var stream = assembly.GetManifestResourceStream("Swagger2Pdf.Assets.github-markdown.css"))
+            using(var reader = new StreamReader(stream))
+            {
+                htmlStringBuilder.Append(reader.ReadToEnd());
+            }
+
+            
             htmlStringBuilder.Append("</style></head><body class=\"markdown-body\">");
         }
 
