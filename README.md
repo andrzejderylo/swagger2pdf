@@ -34,7 +34,7 @@ For filtering sake, following combinations are allowed:
 `Swagger2Pdf.exe --input ./swagger.json --output ./petstore.pdf`
 ## Include company logo
 ``Swagger2Pdf.exe --input https://petstore.swagger.io/v2/swagger.json --output ./petstore.pdf --picture ./image.png``
-## Include company custom page
+## Include custom page
 ``Swagger2Pdf.exe --input https://petstore.swagger.io/v2/swagger.json --output ./petstore.pdf --picture ./image.png --custom-page ./page.md``
 ## Filtering endpoints
 `Swagger2Pdf.exe --filter :/pet GET:/store/inventory --input https://petstore.swagger.io/v2/swagger.json --output ./petstore.pdf`
