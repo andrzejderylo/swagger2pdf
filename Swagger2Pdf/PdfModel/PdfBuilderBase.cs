@@ -26,7 +26,6 @@ namespace Swagger2Pdf.PdfModel
 
             Logger.Info("Drawing custom page");
             DrawCustomPage(swaggerDocumentModel);
-            BeginNewPage();
             Logger.Info("Drawing custom page done");
 
             Logger.Info("Drawing authorization info page");
@@ -62,6 +61,7 @@ namespace Swagger2Pdf.PdfModel
             {
                 CommonMark.CommonMarkConverter.Convert(reader, writer);
                 WriteCustomPage(writer);
+                BeginNewPage();
             }
         }
 
