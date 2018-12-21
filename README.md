@@ -1,4 +1,4 @@
-[![Build status](https://dev.azure.com/andrzejderylo/swagger2pdf/_apis/build/status/swagger2pdf-netcore)](https://dev.azure.com/andrzejderylo/swagger2pdf/_build/latest?definitionId=2)
+[![Build status](https://dev.azure.com/andrzejderylo/swagger2pdf/_apis/build/status/swagger2pdf-netcore)](https://dev.azure.com/andrzejderylo/swagger2pdf/_build/latest?definitionId=3)
 
 # swagger2pdf
 console tool for generating pdf documents out of `swagger.json` file 
